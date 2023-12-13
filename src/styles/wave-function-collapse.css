@@ -1,12 +1,29 @@
-.wfc-h1 {
-  color: #fff;
-  max-width: 1024px;
-  margin: 80px auto 0;
+main {
+  --gap: 20px;
+  --canvas-width: 1024px;
+
+  max-width: calc(var(--canvas-width) + calc(var(--gap) * 2));
+  padding: var(--gap);
+  margin: min(10vw, 80px) auto 0;
+
+  & .tileset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+
+    & .tiles {
+      --columns: 5;
+
+      display: grid;
+      gap: 1px;
+      grid-template-columns: repeat(var(--columns), 32px);
+      grid-template-rows: repeat(3, 1fr);
+    }
+  }
 }
 
 .wfc {
-  background: #fff;
-  margin: 20px auto;
+  margin: var(--gap) 0;
   display: block;
-  background-size: 40px 40px;
+  max-width: 100%;
 }

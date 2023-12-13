@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Sam Fritton | Portfolio</title>
+    <title>Sam Fritton | Wave Function Collapse</title>
     <meta name="description" content="" />
     <meta
       name="viewport"
@@ -17,17 +17,61 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles/index.css" />
+    <link rel="stylesheet" href="./styles/wave-function-collapse.css" />
   </head>
   <body>
-    <include src="./src/parts/header.part.html"></include>
     <main>
-      <a href="./wave-function-collapse.html">Wave function collapse</a>
-      <include src="./src/parts/star-trek-puzzle.part.html"></include>
-      <include src="./src/parts/css-explorations/index.part.html"></include>
-      <!-- <include src="./src/parts/procedural-generation.part.html"></include>
-      <include src="./src/parts/physics-simulations.part.html"></include> -->
+      <h1>Wave Function Collapse</h1>
+      <h2>Tiles</h2>
+      <div class="tileset">
+        <div class="tiles">
+          <img id="top_left" src="./img/cave_tiles/sprite_00.png" />
+          <img id="top" src="./img/cave_tiles/sprite_01.png" />
+          <img id="top_right" src="./img/cave_tiles/sprite_02.png" />
+          <img id="pillar_bottom_right" src="./img/cave_tiles/sprite_03.png" />
+          <img id="pillar_bottom_left" src="./img/cave_tiles/sprite_04.png" />
+          <img id="left" src="./img/cave_tiles/sprite_05.png" />
+          <img id="floor" src="./img/cave_tiles/sprite_06.png" />
+          <img id="right" src="./img/cave_tiles/sprite_07.png" />
+          <img id="pillar_top_right" src="./img/cave_tiles/sprite_08.png" />
+          <img id="pillar_top_left" src="./img/cave_tiles/sprite_09.png" />
+          <img id="bottom_left" src="./img/cave_tiles/sprite_10.png" />
+          <img id="bottom" src="./img/cave_tiles/sprite_11.png"/>
+          <img id="bottom_right" src="./img/cave_tiles/sprite_12.png" />
+          <img id="wall" src="./img/cave_tiles/sprite_13.png" />
+          <img id="wall_two" src="./img/cave_tiles/sprite_14.png" />
+        </div>
+        <div class="tiles">
+          <img id="ledge_top_left" src="./img/cave_tiles/pit_00.png" />
+          <img id="ledge_top" src="./img/cave_tiles/pit_01.png" />
+          <img id="ledge_top_right" src="./img/cave_tiles/pit_02.png" />
+          <img id="ledge_pillar_bottom_right" src="./img/cave_tiles/pit_03.png" />
+          <img id="ledge_pillar_bottom_left" src="./img/cave_tiles/pit_04.png" />
+          <img id="ledge_left" src="./img/cave_tiles/pit_05.png" />
+          <img src="./img/cave_tiles/sprite_06.png" />
+          <img id="ledge_right" src="./img/cave_tiles/pit_06.png" />
+          <img id="ledge_pillar_top_right" src="./img/cave_tiles/pit_07.png" />
+          <img id="ledge_pillar_top_left" src="./img/cave_tiles/pit_08.png" />
+          <img id="ledge_bottom_left" src="./img/cave_tiles/pit_09.png" />
+          <img id="ledge_bottom" src="./img/cave_tiles/pit_10.png" />
+          <img id="ledge_bottom_right" src="./img/cave_tiles/pit_11.png" />
+        </div>
+        <div class="tiles" style="--columns: 4">
+          <img id="ledge_left_ramp_top" src="./img/cave_tiles/ramp_0.png" />
+          <img id="ledge_right_ramp_top" src="./img/cave_tiles/ramp_1.png" />
+          <img id="ledge_top_ramp_left" src="./img/cave_tiles/ramp_2.png" />
+          <img id="ledge_top_ramp_right" src="./img/cave_tiles/ramp_3.png" />
+          <img id="ledge_left_ramp_bottom" src="./img/cave_tiles/ramp_6.png" />
+          <img id="ledge_right_ramp_bottom" src="./img/cave_tiles/ramp_7.png" />
+          <img id="ledge_bottom_ramp_left" src="./img/cave_tiles/ramp_4.png" />
+          <img id="ledge_bottom_ramp_right" src="./img/cave_tiles/ramp_5.png" />
+        </div>
+      </div>
+      <h2>Demo</h2>
+      <canvas class="wfc" width="1024" height="768">hello</canvas>
     </main>
     <include src="./src/parts/footer.part.html"></include>
     <script type="module" src="./scripts/scroll-driver.ts"></script>
+    <script type="module" src="./scripts/wave-function-collapse/index.ts"></script>
   </body>
 </html>

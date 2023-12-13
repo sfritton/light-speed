@@ -1,8 +1,10 @@
-# Portfolio
+# Wave Function Collapse
 
-A simple portfolio site to show off some of my work.
+An exploration into using the Wave Function Collapse algorithm to generate caves.
 
-Check out the [deployed site](https://sfritton.github.io/).
+Check out the [deployed site](https://sfritton.github.io/wave-function-collapse).
+
+![A procedurally generated cave](screenshot.png)
 
 ## Running it locally
 
