@@ -104,7 +104,7 @@ const drawCell = (cell: Cell) => {
   context.fillStyle = GRAYS[cell.domain.length - 1];
   context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 
-  context.fillStyle = '#000';
+  // context.fillStyle = '#000';
   // context.fillText(`${cell.domain.length}`, x + CELL_SIZE / 2, y + CELL_SIZE / 2);
 };
 
@@ -116,6 +116,15 @@ const drawGrid = (cells: Cell[]) => {
   cells.forEach((cell) => drawCell(cell));
 };
 
-const wfc = new WaveFunctionCollapse(drawGrid, ROWS, COLUMNS);
+const regenerateButton = document.getElementById('regenerate') as HTMLButtonElement | null;
 
-wfc.run(true);
+const generateCave = async () => {
+  if (regenerateButton) regenerateButton.disabled = true;
+  const wfc = new WaveFunctionCollapse(drawGrid, ROWS, COLUMNS);
+  await wfc.run(true);
+  if (regenerateButton) regenerateButton.disabled = false;
+};
+
+generateCave();
+
+regenerateButton?.addEventListener('click', () => generateCave());
