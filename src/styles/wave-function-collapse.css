@@ -1,0 +1,12 @@
+.wfc-h1 {
+  color: #fff;
+  max-width: 1024px;
+  margin: 80px auto 0;
+}
+
+.wfc {
+  background: #fff;
+  margin: 20px auto;
+  display: block;
+  background-size: 40px 40px;
+}
