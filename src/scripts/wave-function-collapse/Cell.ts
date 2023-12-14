@@ -62,7 +62,8 @@ export class Cell {
       return true;
     });
 
-    if (this.domain.length === 0) throw new Error('Cell domain is empty!');
+    if (this.domain.length === 0)
+      throw new Error(`Cell at (${this.x}, ${this.y}) has an empty domain!`);
 
     // update neighbors if this cell changed
     if (forceUpdateNeighbors || this.domain.length !== initialDomainSize)

@@ -1,6 +1,7 @@
 import { Cell } from './Cell';
 
-const ZONE_SIZE = 16;
+const ZONE_WIDTH = 16;
+const ZONE_HEIGHT = 12;
 
 function shuffleArray(array: any[]) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -43,7 +44,7 @@ export class WaveFunctionCollapse {
 
   setCurrentZone(x: number, y: number) {
     this.currentZone = this.cells.filter(
-      (cell) => cell.x >= x && cell.x < x + ZONE_SIZE && cell.y >= y && cell.y < y + ZONE_SIZE,
+      (cell) => cell.x >= x && cell.x < x + ZONE_WIDTH && cell.y >= y && cell.y < y + ZONE_HEIGHT,
       [],
     );
     this.uncollapsedCells = this.currentZone.filter((cell) => !cell.isCollapsed);
@@ -60,8 +61,8 @@ export class WaveFunctionCollapse {
       this.startTime = new Date().getTime();
       if (drawSteps) return this.runAsync();
 
-      for (let y = 0; y < this.gridHeight; y += ZONE_SIZE) {
-        for (let x = 0; x < this.gridWidth; x += ZONE_SIZE) {
+      for (let y = 0; y < this.gridHeight; y += ZONE_HEIGHT) {
+        for (let x = 0; x < this.gridWidth; x += ZONE_WIDTH) {
           this.runZone(x, y);
         }
       }
@@ -72,8 +73,8 @@ export class WaveFunctionCollapse {
   };
 
   runAsync = async () => {
-    for (let y = 0; y < this.gridHeight; y += ZONE_SIZE) {
-      for (let x = 0; x < this.gridWidth; x += ZONE_SIZE) {
+    for (let y = 0; y < this.gridHeight; y += ZONE_HEIGHT) {
+      for (let x = 0; x < this.gridWidth; x += ZONE_WIDTH) {
         await this.runZoneAsync(x, y);
       }
     }
