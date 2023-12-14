@@ -36,6 +36,7 @@ main {
       margin-bottom: 0;
     }
 
+    & #step, 
     & #regenerate {
       padding: 8px 16px;
       display: inline-flex;

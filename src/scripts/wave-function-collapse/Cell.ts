@@ -1,4 +1,4 @@
-import { CAVE_TILES, SocketTileName } from './Tile';
+import { CAVE_TILES, SocketTileName } from '../common/Tile';
 
 export class Cell {
   x: number;

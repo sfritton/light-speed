@@ -1,20 +1,4 @@
-import { Cell } from './Cell';
-import { CAVE_TILES, SocketTileName } from './Tile';
-import { WaveFunctionCollapse } from './WaveFunctionCollapse';
-
-const CANVAS_WIDTH = 1024;
-const CANVAS_HEIGHT = 768;
-const CELL_SIZE = 32;
-const ROWS = Math.floor(CANVAS_WIDTH / CELL_SIZE);
-const COLUMNS = Math.floor(CANVAS_HEIGHT / CELL_SIZE);
-const GRAYS = Object.keys(CAVE_TILES).map((_, i) => {
-  const brightness = 255 - i * 10;
-
-  return `rgb(${brightness} ${brightness} ${brightness})`;
-});
-
-const canvas = document.querySelector<HTMLCanvasElement>('canvas.wfc');
-const context = canvas?.getContext('2d');
+import { SocketTileName } from './Tile';
 
 const image_bottom = document.getElementById('bottom');
 const image_bottom_left = document.getElementById('bottom_left');
@@ -52,7 +36,7 @@ const image_ledge_bottom_ramp_right = document.getElementById('ledge_bottom_ramp
 const image_ledge_left_ramp_bottom = document.getElementById('ledge_left_ramp_bottom');
 const image_ledge_right_ramp_bottom = document.getElementById('ledge_right_ramp_bottom');
 
-const FILL_STYLES: Record<SocketTileName, HTMLElement | null> = {
+export const FILL_STYLES: Record<SocketTileName, HTMLElement | null> = {
   BOTTOM: image_bottom,
   BOTTOM_LEFT: image_bottom_left,
   BOTTOM_RIGHT: image_bottom_right,
@@ -89,42 +73,3 @@ const FILL_STYLES: Record<SocketTileName, HTMLElement | null> = {
   LEDGE_LEFT_RAMP_BOTTOM: image_ledge_left_ramp_bottom,
   LEDGE_RIGHT_RAMP_BOTTOM: image_ledge_right_ramp_bottom,
 };
-
-const drawCell = (cell: Cell) => {
-  if (!context) return;
-  const x = cell.x * CELL_SIZE;
-  const y = cell.y * CELL_SIZE;
-
-  if (cell.isCollapsed) {
-    const image = FILL_STYLES[CAVE_TILES[cell.domain[0]].name];
-    context.drawImage(image, x, y, CELL_SIZE, CELL_SIZE);
-    return;
-  }
-
-  context.fillStyle = GRAYS[cell.domain.length - 1];
-  context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
-
-  // context.fillStyle = '#000';
-  // context.fillText(`${cell.domain.length}`, x + CELL_SIZE / 2, y + CELL_SIZE / 2);
-};
-
-const drawGrid = (cells: Cell[]) => {
-  if (!context) return;
-  context.textAlign = 'center';
-  context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-  cells.forEach((cell) => drawCell(cell));
-};
-
-const regenerateButton = document.getElementById('regenerate') as HTMLButtonElement | null;
-
-const generateCave = async () => {
-  if (regenerateButton) regenerateButton.disabled = true;
-  const wfc = new WaveFunctionCollapse(drawGrid, ROWS, COLUMNS);
-  await wfc.run(true);
-  if (regenerateButton) regenerateButton.disabled = false;
-};
-
-generateCave();
-
-regenerateButton?.addEventListener('click', () => generateCave());
