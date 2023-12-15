@@ -26,13 +26,16 @@ const drawCell = (cell: Cell) => {
   const y = cell.y * CELL_SIZE;
 
   if (!(cell instanceof CellWfc)) {
-    // const image = cell.isFloor ? FILL_STYLES.FLOOR : FILL_STYLES.WALL;
+    const image = FILL_STYLES[cell.tileName];
 
-    // if (!(image instanceof HTMLImageElement)) return;
+    if (!(image instanceof HTMLImageElement)) return;
 
-    // context.drawImage(image, x, y, CELL_SIZE, CELL_SIZE);
-    context.fillStyle = cell.isFloor ? '#d2bdb5' : '#885545';
-    context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+    context.drawImage(image, x, y, CELL_SIZE, CELL_SIZE);
+    // if (cell.x % 2 === 1 && cell.y % 2 === 1) {
+    // context.lineWidth = 1;
+    // context.strokeStyle = '#000';
+    // context.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
+    // }
     // context.fillStyle = '#000';
     // context.fillText(`${cell.x},${cell.y}`, x + CELL_SIZE / 2, y + CELL_SIZE * 0.6);
     return;
@@ -95,10 +98,36 @@ const generateCave = async () => {
 generateCave();
 
 stepButton?.addEventListener('click', () => {
-  ca?.step(3);
+  // ca?.step(3);
+  ca?.cleanup();
   ca?.draw();
 });
 
 regenerateButton?.addEventListener('click', () => {
   generateCave();
+});
+
+canvas?.addEventListener('click', (e) => {
+  var rect = canvas.getBoundingClientRect();
+  const canvasX = e.clientX - rect.left;
+  const canvasY = e.clientY - rect.top;
+
+  const cellX = Math.floor(canvasX / CELL_SIZE);
+  const cellY = Math.floor(canvasY / CELL_SIZE);
+
+  if (ca) {
+    const index = ca.getIndexFromCoordinates(cellX, cellY);
+    console.log({
+      isFloor: ca.getCell(cellX, cellY),
+      neighborFloorCount: ca.getNeighborFloorCount(cellX, cellY),
+      // floodResult: ca.floodFill(index),
+      caveSize: ca.caveSizes[index],
+    });
+  }
+
+  if (!context) return;
+
+  context.lineWidth = 1;
+  context.strokeStyle = '#0ff';
+  context.strokeRect(cellX * CELL_SIZE, cellY * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 });
