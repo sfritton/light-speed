@@ -6,11 +6,13 @@ import { CellularAutomata, CellularAutomataCell } from './cellular-automata/Cell
 
 type Cell = CellWfc | CellularAutomataCell;
 
+const SPEED = 16;
+const ZOOM_LEVEL = 1;
 const CANVAS_WIDTH = 1024;
 const CANVAS_HEIGHT = 768;
-const CELL_SIZE = 8;
-const ROWS = Math.floor(CANVAS_WIDTH / CELL_SIZE);
-const COLUMNS = Math.floor(CANVAS_HEIGHT / CELL_SIZE);
+const CELL_SIZE = 16;
+const ROWS = Math.floor((CANVAS_WIDTH / CELL_SIZE) * ZOOM_LEVEL);
+const COLUMNS = Math.floor((CANVAS_HEIGHT / CELL_SIZE) * ZOOM_LEVEL);
 const GRAYS = Object.keys(CAVE_TILES).map((_, i) => {
   const brightness = 255 - i * 10;
 
@@ -19,11 +21,13 @@ const GRAYS = Object.keys(CAVE_TILES).map((_, i) => {
 
 const canvas = document.querySelector<HTMLCanvasElement>('canvas.wfc');
 const context = canvas?.getContext('2d');
+let offsetX = 0;
+let offsetY = 0;
 
 const drawCell = (cell: Cell) => {
   if (!context) return;
-  const x = cell.x * CELL_SIZE;
-  const y = cell.y * CELL_SIZE;
+  const x = cell.x * CELL_SIZE - offsetX;
+  const y = cell.y * CELL_SIZE - offsetY;
 
   if (!(cell instanceof CellWfc)) {
     const image = FILL_STYLES[cell.tileName];
@@ -35,6 +39,8 @@ const drawCell = (cell: Cell) => {
     // context.lineWidth = 1;
     // context.strokeStyle = '#000';
     // context.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
+    // context.fillStyle = cell.tileName === 'WALL' ? 'black' : 'white';
+    // context.fillRect(x - dotSize / 2, y - dotSize / 2, dotSize, dotSize);
     // }
     // context.fillStyle = '#000';
     // context.fillText(`${cell.x},${cell.y}`, x + CELL_SIZE / 2, y + CELL_SIZE * 0.6);
@@ -52,6 +58,13 @@ const drawCell = (cell: Cell) => {
 
   // context.fillStyle = '#000';
   // context.fillText(`${cell.domain.length}`, x + CELL_SIZE / 2, y + CELL_SIZE / 2);
+};
+
+const drawPlayer = () => {
+  if (!context) return;
+
+  context.fillStyle = '#000';
+  context.fillRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CELL_SIZE, CELL_SIZE);
 };
 
 const drawStepCount = (stepCount: number) => {
@@ -72,10 +85,13 @@ const drawGrid = (cells: Cell[], stepCount: number) => {
   if (!context) return;
   context.textAlign = 'center';
   context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  context.fillStyle = '#885445';
+  context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   cells.forEach((cell) => drawCell(cell));
 
-  drawStepCount(stepCount);
+  // drawStepCount(stepCount);
+  // drawPlayer();
 };
 
 const regenerateButton = document.getElementById('regenerate') as HTMLButtonElement | null;
@@ -131,3 +147,69 @@ canvas?.addEventListener('click', (e) => {
   context.strokeStyle = '#0ff';
   context.strokeRect(cellX * CELL_SIZE, cellY * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 });
+
+// document.addEventListener('keydown', (e) => {
+//   if (!activeKeySet.has(e.key)) return;
+//   activeKeys[e.key] = true;
+//   const MIN_X = CANVAS_WIDTH / -2;
+//   const MIN_Y = CANVAS_HEIGHT / -2;
+//   const MAX_X = CANVAS_WIDTH * (ZOOM_LEVEL - 0.5) - CELL_SIZE;
+//   const MAX_Y = CANVAS_HEIGHT * (ZOOM_LEVEL - 0.5) - CELL_SIZE;
+//   switch (e.key) {
+//     case 'ArrowRight':
+//       e.preventDefault();
+//       offsetX += SPEED;
+//       if (offsetX > MAX_X) {
+//         offsetX = MAX_X;
+//       }
+//       break;
+//     case 'ArrowLeft':
+//       e.preventDefault();
+//       offsetX -= SPEED;
+//       if (offsetX < MIN_X) offsetX = MIN_X;
+//       break;
+//     case 'ArrowDown':
+//       e.preventDefault();
+//       offsetY += SPEED;
+//       if (offsetY > MAX_Y) offsetY = MAX_Y;
+//       break;
+//     case 'ArrowUp':
+//       e.preventDefault();
+//       offsetY -= SPEED;
+//       if (offsetY < MIN_Y) offsetY = MIN_Y;
+//       break;
+//   }
+//   ca?.draw();
+// });
+
+const activeKeys = {
+  ArrowRight: 0,
+  ArrowLeft: 0,
+  ArrowUp: 0,
+  ArrowDown: 0,
+};
+
+const activeKeySet = new Set(Object.keys(activeKeys));
+
+document.addEventListener('keyup', (e) => {
+  if (!activeKeySet.has(e.key)) return;
+  e.preventDefault();
+  activeKeys[e.key] = 0;
+});
+
+document.addEventListener('keydown', (e) => {
+  if (!activeKeySet.has(e.key)) return;
+  e.preventDefault();
+  activeKeys[e.key] = 1;
+});
+
+const move = () => {
+  const upForce = activeKeys.ArrowUp;
+  const downForce = activeKeys.ArrowDown;
+  const leftForce = activeKeys.ArrowLeft;
+  const rightForce = activeKeys.ArrowRight;
+
+  const verticalForce = downForce - upForce;
+  const horizontalForce = rightForce - leftForce;
+  // TODO: convert to movement, call once per frame
+};

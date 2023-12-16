@@ -6,9 +6,9 @@ export interface CellularAutomataCell {
   tileName: SocketTileName;
 }
 
-const WALL_THRESHOLD = 0.38;
-const LIVE_NEIGHBOR_THRESHOLD = 5;
-const TOTAL_STEPS = 10;
+const WALL_THRESHOLD = 0.5;
+const LIVE_NEIGHBOR_THRESHOLD = 4;
+const TOTAL_STEPS = 8;
 const SOFTENING_STEPS = 2;
 const CLEANUP_COUNT = 10;
 
@@ -21,6 +21,7 @@ export class CellularAutomata {
   cells: boolean[]; // true for floor, false for wall
   floodChecks: boolean[];
   caveSizes: number[];
+  wallTwos: boolean[]; // render wall_two if it's a wall
 
   constructor(
     draw: (cells: CellularAutomataCell[], stepCount: number) => void,
@@ -33,65 +34,79 @@ export class CellularAutomata {
     this.stepCount = 0;
 
     this.cells = [...new Array(gridWidth * gridHeight)].map(() => Math.random() > WALL_THRESHOLD);
+    this.wallTwos = this.cells.map(() => Math.random() > 0.9);
     this.floodChecks = this.cells.map(() => false);
     this.caveSizes = this.cells.map(() => 0);
   }
 
   draw() {
-    this.drawFn(
-      this.cells.map((_, index) => {
-        const { x, y } = this.getCoordinatesFromIndex(index);
-        const tileName = this.getTileName(index);
+    const squares = [...new Array(this.gridWidth * this.gridHeight)].map((_, index) => {
+      const { x, y } = this.getCoordinatesFromIndex(index);
 
-        return { x, y, tileName };
+      return {
+        topLeft: this.getCell(x, y),
+        bottomLeft: this.getCell(x, y + 1),
+        bottomRight: this.getCell(x + 1, y + 1),
+        topRight: this.getCell(x + 1, y),
+        x,
+        y,
+      };
+    });
+
+    this.drawFn(
+      squares.map(({ x, y, ...corners }) => {
+        return {
+          x: x + 1,
+          y: y + 1,
+          tileName: this.getTileName(corners),
+        };
       }),
       this.stepCount,
     );
   }
 
-  getTileName = (index: number): SocketTileName => {
-    const isFloor = this.cells[index];
-    if (isFloor) return 'FLOOR';
-
-    const neighborFloorCount = this.getNeighborFloorCount(index);
-    const { x, y } = this.getCoordinatesFromIndex(index);
-
-    if (neighborFloorCount === 0) {
-      return Math.random() > 0.85 ? 'WALL_TWO' : 'WALL';
-    }
-
-    const hasTopWall = !this.getCell(x, y - 1);
-    const hasBottomWall = !this.getCell(x, y + 1);
-    const hasLeftWall = !this.getCell(x - 1, y);
-    const hasRightWall = !this.getCell(x + 1, y);
-
-    // Inside corners
-    if (neighborFloorCount === 1) {
-      if (this.getCell(x - 1, y - 1)) return 'BOTTOM_RIGHT';
-      if (this.getCell(x + 1, y + 1)) return 'TOP_LEFT';
-      if (this.getCell(x - 1, y + 1)) return 'TOP_RIGHT';
-      if (this.getCell(x + 1, y - 1)) return 'BOTTOM_LEFT';
-    }
-
-    // TODO: this should never happen
-    if (neighborFloorCount > 5) {
-      return 'WALL';
-    }
+  getTileName = ({
+    topLeft,
+    bottomLeft,
+    bottomRight,
+    topRight,
+  }: {
+    topLeft: boolean;
+    bottomLeft: boolean;
+    bottomRight: boolean;
+    topRight: boolean;
+  }) => {
+    // Pure floor and pure wall
+    if (topLeft && topRight && bottomLeft && bottomRight) return 'FLOOR';
+    if (!topLeft && !topRight && !bottomLeft && !bottomRight) return 'WALL';
 
     // Edges
-    if (hasTopWall && hasRightWall && !hasBottomWall && hasLeftWall) return 'TOP';
-    if (hasTopWall && hasRightWall && hasBottomWall && !hasLeftWall) return 'RIGHT';
-    if (!hasTopWall && hasRightWall && hasBottomWall && hasLeftWall) return 'BOTTOM';
-    if (hasTopWall && !hasRightWall && hasBottomWall && hasLeftWall) return 'LEFT';
+    if (topLeft && topRight && !bottomLeft && !bottomRight) return 'BOTTOM';
+    if (!topLeft && !topRight && bottomLeft && bottomRight) return 'TOP';
+    if (topLeft && !topRight && bottomLeft && !bottomRight) return 'RIGHT';
+    if (!topLeft && topRight && !bottomLeft && bottomRight) return 'LEFT';
+
+    // Inside corners
+    if (!topLeft && !topRight && !bottomLeft && bottomRight) return 'TOP_LEFT';
+    if (!topLeft && !topRight && bottomLeft && !bottomRight) return 'TOP_RIGHT';
+    if (!topLeft && topRight && !bottomLeft && !bottomRight) return 'BOTTOM_LEFT';
+    if (topLeft && !topRight && !bottomLeft && !bottomRight) return 'BOTTOM_RIGHT';
 
     // Outside corners
-    if (hasTopWall && hasRightWall && !hasBottomWall && !hasLeftWall) return 'PILLAR_TOP_RIGHT';
-    if (!hasTopWall && hasRightWall && hasBottomWall && !hasLeftWall) return 'PILLAR_BOTTOM_RIGHT';
-    if (hasTopWall && !hasRightWall && !hasBottomWall && hasLeftWall) return 'PILLAR_TOP_LEFT';
-    if (!hasTopWall && !hasRightWall && hasBottomWall && hasLeftWall) return 'PILLAR_BOTTOM_LEFT';
+    if (!topLeft && topRight && bottomLeft && bottomRight) return 'PILLAR_TOP_LEFT';
+    if (topLeft && !topRight && bottomLeft && bottomRight) return 'PILLAR_TOP_RIGHT';
+    if (topLeft && topRight && !bottomLeft && bottomRight) return 'PILLAR_BOTTOM_LEFT';
+    if (topLeft && topRight && bottomLeft && !bottomRight) return 'PILLAR_BOTTOM_RIGHT';
 
-    // TODO: this should never happen
-    return 'WALL';
+    // TODO: create diagonal tiles
+    if (!topLeft && topRight && bottomLeft && !bottomRight) return 'LEDGE_TOP_RAMP_RIGHT';
+    if (topLeft && !topRight && !bottomLeft && bottomRight) return 'LEDGE_TOP_RAMP_LEFT';
+
+    throw new Error(`Unknown tile configuration:
+ ${topLeft ? 'FLOOR' : ' WALL'} - ${topRight ? 'FLOOR' : 'WALL'}
+   |      |
+ ${bottomLeft ? 'FLOOR' : ' WALL'} - ${bottomRight ? 'FLOOR' : 'WALL'}
+`);
   };
 
   getCoordinatesFromIndex = (index: number) => ({
@@ -118,7 +133,6 @@ export class CellularAutomata {
   getNeighborFloorCount(a: number, b?: number) {
     let x: number;
     let y: number;
-    // const { x, y } = this.getCoordinatesFromIndex(index);
     let neighbourCellCount = 0;
 
     if (b === undefined) {
@@ -161,35 +175,24 @@ export class CellularAutomata {
     return neighbourCellCount;
   }
 
-  step = (threshold = LIVE_NEIGHBOR_THRESHOLD) => {
+  step = ({ threshold = LIVE_NEIGHBOR_THRESHOLD, lockFloor = false } = {}) => {
     this.stepCount++;
-    this.cells = this.cells.map((oldValue, index) => {
+    this.cells = this.cells.map((isFloor, index) => {
+      if (isFloor && lockFloor) return true;
+
       const neighborFloorCount = this.getNeighborFloorCount(index);
-      const newValue = neighborFloorCount >= threshold;
-      // console.log({
-      //   ...this.getCoordinatesFromIndex(index),
-      //   neighborFloorCount,
-      //   oldValue,
-      //   newValue,
-      // });
-      return newValue;
+      if (neighborFloorCount > threshold) return true;
+      else if (neighborFloorCount < threshold) return false;
+      return isFloor;
     });
   };
 
   expandWalls = () => {
-    this.cells = this.cells.map((oldValue, index) => {
-      const neighborFloorCount = this.getNeighborFloorCount(index);
-      const newValue = neighborFloorCount >= 8;
-      return newValue;
-    });
+    this.step({ threshold: 8 });
   };
 
   cleanup = () => {
-    this.cells = this.cells.map((oldValue, index) => {
-      const neighborFloorCount = this.getNeighborFloorCount(index);
-      const newValue = oldValue || neighborFloorCount >= 5;
-      return newValue;
-    });
+    this.step({ threshold: 5, lockFloor: true });
   };
 
   findCaveSizes() {
@@ -239,7 +242,7 @@ export class CellularAutomata {
       this.step();
     }
     while (this.stepCount < TOTAL_STEPS) {
-      this.step(LIVE_NEIGHBOR_THRESHOLD - 2);
+      this.step({ threshold: LIVE_NEIGHBOR_THRESHOLD - 2 });
     }
 
     for (let i = 0; i < CLEANUP_COUNT; i++) {
