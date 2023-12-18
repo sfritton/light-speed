@@ -75,7 +75,9 @@ export type SocketTileName =
   | 'LEDGE_BOTTOM_RAMP_LEFT'
   | 'LEDGE_BOTTOM_RAMP_RIGHT'
   | 'LEDGE_LEFT_RAMP_BOTTOM'
-  | 'LEDGE_RIGHT_RAMP_BOTTOM';
+  | 'LEDGE_RIGHT_RAMP_BOTTOM'
+  | 'DIAGONAL_BL_TO_TR'
+  | 'DIAGONAL_BR_TO_TL';
 
 export type SocketNameVertical =
   | 'WALL'

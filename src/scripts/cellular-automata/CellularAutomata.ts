@@ -8,8 +8,8 @@ export interface CellularAutomataCell {
 
 const WALL_THRESHOLD = 0.5;
 const LIVE_NEIGHBOR_THRESHOLD = 4;
-const TOTAL_STEPS = 8;
-const SOFTENING_STEPS = 2;
+const TOTAL_STEPS = 3;
+const SOFTENING_STEPS = 1;
 const CLEANUP_COUNT = 10;
 
 export class CellularAutomata {
@@ -55,10 +55,14 @@ export class CellularAutomata {
 
     this.drawFn(
       squares.map(({ x, y, ...corners }) => {
+        const tileName = this.getTileName(corners);
         return {
           x: x + 1,
           y: y + 1,
-          tileName: this.getTileName(corners),
+          tileName:
+            tileName === 'WALL' && this.wallTwos[this.getIndexFromCoordinates(x, y)]
+              ? 'WALL_TWO'
+              : tileName,
         };
       }),
       this.stepCount,
@@ -98,9 +102,8 @@ export class CellularAutomata {
     if (topLeft && topRight && !bottomLeft && bottomRight) return 'PILLAR_BOTTOM_LEFT';
     if (topLeft && topRight && bottomLeft && !bottomRight) return 'PILLAR_BOTTOM_RIGHT';
 
-    // TODO: create diagonal tiles
-    if (!topLeft && topRight && bottomLeft && !bottomRight) return 'LEDGE_TOP_RAMP_RIGHT';
-    if (topLeft && !topRight && !bottomLeft && bottomRight) return 'LEDGE_TOP_RAMP_LEFT';
+    if (!topLeft && topRight && bottomLeft && !bottomRight) return 'DIAGONAL_BR_TO_TL';
+    if (topLeft && !topRight && !bottomLeft && bottomRight) return 'DIAGONAL_BL_TO_TR';
 
     throw new Error(`Unknown tile configuration:
  ${topLeft ? 'FLOOR' : ' WALL'} - ${topRight ? 'FLOOR' : 'WALL'}

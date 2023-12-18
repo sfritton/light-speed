@@ -1,7 +1,7 @@
 import { Cell as CellWfc } from './wave-function-collapse/Cell';
 import { CAVE_TILES, SocketTileName } from './common/Tile';
 import { WaveFunctionCollapse } from './wave-function-collapse/WaveFunctionCollapse';
-import { FILL_STYLES } from './common/images';
+import { FILL_STYLES, FILL_STYLES_NEW } from './common/images';
 import { CellularAutomata, CellularAutomataCell } from './cellular-automata/CellularAutomata';
 
 type Cell = CellWfc | CellularAutomataCell;
@@ -30,11 +30,26 @@ const drawCell = (cell: Cell) => {
   const y = cell.y * CELL_SIZE - offsetY;
 
   if (!(cell instanceof CellWfc)) {
-    const image = FILL_STYLES[cell.tileName];
+    const imageDetails = FILL_STYLES_NEW[cell.tileName];
 
-    if (!(image instanceof HTMLImageElement)) return;
+    if (cell.tileName === 'DIAGONAL_BR_TO_TL' || cell.tileName === 'DIAGONAL_BL_TO_TR')
+      console.log('DIAOGNAL!');
 
-    context.drawImage(image, x, y, CELL_SIZE, CELL_SIZE);
+    if (!imageDetails) throw new Error(`Could not find image details for ${cell.tileName}`);
+
+    if (!imageDetails.image) return;
+
+    context.drawImage(
+      imageDetails.image,
+      imageDetails.x * 16,
+      imageDetails.y * 16,
+      16,
+      16,
+      x,
+      y,
+      CELL_SIZE,
+      CELL_SIZE,
+    );
     // if (cell.x % 2 === 1 && cell.y % 2 === 1) {
     // context.lineWidth = 1;
     // context.strokeStyle = '#000';
@@ -85,7 +100,7 @@ const drawGrid = (cells: Cell[], stepCount: number) => {
   if (!context) return;
   context.textAlign = 'center';
   context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  context.fillStyle = '#885445';
+  context.fillStyle = '#8b6150';
   context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   cells.forEach((cell) => drawCell(cell));
@@ -98,6 +113,24 @@ const regenerateButton = document.getElementById('regenerate') as HTMLButtonElem
 const stepButton = document.getElementById('step') as HTMLButtonElement | null;
 
 let ca: CellularAutomata | undefined;
+
+const squares: CellularAutomataCell[] = [
+  { x: 0, y: 0, tileName: 'TOP_LEFT' },
+  { x: 1, y: 0, tileName: 'TOP' },
+  { x: 2, y: 0, tileName: 'TOP_RIGHT' },
+  { x: 3, y: 0, tileName: 'PILLAR_BOTTOM_RIGHT' },
+  { x: 4, y: 0, tileName: 'PILLAR_BOTTOM_LEFT' },
+  { x: 0, y: 1, tileName: 'LEFT' },
+  { x: 1, y: 1, tileName: 'FLOOR' },
+  { x: 2, y: 1, tileName: 'RIGHT' },
+  { x: 3, y: 1, tileName: 'PILLAR_TOP_RIGHT' },
+  { x: 4, y: 1, tileName: 'PILLAR_TOP_LEFT' },
+  { x: 0, y: 2, tileName: 'BOTTOM_LEFT' },
+  { x: 1, y: 2, tileName: 'BOTTOM' },
+  { x: 2, y: 2, tileName: 'BOTTOM_RIGHT' },
+  { x: 3, y: 2, tileName: 'WALL' },
+  { x: 4, y: 2, tileName: 'WALL_TWO' },
+];
 
 const generateCave = async () => {
   if (regenerateButton) regenerateButton.disabled = true;

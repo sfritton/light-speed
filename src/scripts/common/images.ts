@@ -1,5 +1,6 @@
 import { SocketTileName } from './Tile';
 
+// TODO: this could be a single image, cuz that's what spritesheets are for
 const image_bottom = document.getElementById('bottom');
 const image_bottom_left = document.getElementById('bottom_left');
 const image_bottom_right = document.getElementById('bottom_right');
@@ -72,4 +73,30 @@ export const FILL_STYLES: Record<SocketTileName, HTMLElement | null> = {
   LEDGE_BOTTOM_RAMP_RIGHT: image_ledge_bottom_ramp_right,
   LEDGE_LEFT_RAMP_BOTTOM: image_ledge_left_ramp_bottom,
   LEDGE_RIGHT_RAMP_BOTTOM: image_ledge_right_ramp_bottom,
+};
+
+const imageCaveTiles = document.getElementById('cave_tiles') as HTMLImageElement | null;
+
+// @ts-expect-error: Missing some tiles
+export const FILL_STYLES_NEW: Record<
+  SocketTileName,
+  { image: HTMLImageElement | null; x: number; y: number }
+> = {
+  TOP_LEFT: { x: 0, y: 0, image: imageCaveTiles },
+  TOP: { x: 1, y: 0, image: imageCaveTiles },
+  TOP_RIGHT: { x: 2, y: 0, image: imageCaveTiles },
+  PILLAR_BOTTOM_RIGHT: { x: 3, y: 0, image: imageCaveTiles },
+  PILLAR_BOTTOM_LEFT: { x: 5, y: 0, image: imageCaveTiles },
+  LEFT: { x: 0, y: 1, image: imageCaveTiles },
+  FLOOR: { x: 1, y: 1, image: imageCaveTiles },
+  RIGHT: { x: 2, y: 1, image: imageCaveTiles },
+  PILLAR_TOP_RIGHT: { x: 3, y: 2, image: imageCaveTiles },
+  PILLAR_TOP_LEFT: { x: 5, y: 2, image: imageCaveTiles },
+  BOTTOM_LEFT: { x: 0, y: 2, image: imageCaveTiles },
+  BOTTOM: { x: 1, y: 2, image: imageCaveTiles },
+  BOTTOM_RIGHT: { x: 2, y: 2, image: imageCaveTiles },
+  WALL: { x: 4, y: 1, image: imageCaveTiles },
+  WALL_TWO: { x: 6, y: 2, image: imageCaveTiles },
+  DIAGONAL_BL_TO_TR: { x: 6, y: 0, image: imageCaveTiles },
+  DIAGONAL_BR_TO_TL: { x: 6, y: 1, image: imageCaveTiles },
 };
