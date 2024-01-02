@@ -1,9 +1,10 @@
-import { SocketTileName } from '../common/Tile';
+import { TileName } from '../common/Tile';
+import { CellRenderDetails } from '../common/types';
 
 export interface CellularAutomataCell {
   x: number;
   y: number;
-  tileName: SocketTileName;
+  tileName: TileName;
 }
 
 const WALL_THRESHOLD = 0.5;
@@ -17,14 +18,14 @@ export class CellularAutomata {
   gridWidth: number;
   gridHeight: number;
   startTime = 0;
-  drawFn: (cells: CellularAutomataCell[], stepCount: number) => void;
+  drawFn: (cells: CellRenderDetails[]) => void;
   cells: boolean[]; // true for floor, false for wall
   floodChecks: boolean[];
   caveSizes: number[];
   wallTwos: boolean[]; // render wall_two if it's a wall
 
   constructor(
-    draw: (cells: CellularAutomataCell[], stepCount: number) => void,
+    draw: (cells: CellRenderDetails[]) => void,
     gridWidth: number,
     gridHeight = gridWidth,
   ) {
@@ -57,15 +58,15 @@ export class CellularAutomata {
       squares.map(({ x, y, ...corners }) => {
         const tileName = this.getTileName(corners);
         return {
-          x: x + 1,
-          y: y + 1,
+          x,
+          y,
           tileName:
             tileName === 'WALL' && this.wallTwos[this.getIndexFromCoordinates(x, y)]
               ? 'WALL_TWO'
               : tileName,
+          entropy: 1,
         };
       }),
-      this.stepCount,
     );
   }
 

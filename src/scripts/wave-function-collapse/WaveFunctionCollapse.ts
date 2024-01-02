@@ -1,3 +1,4 @@
+import { CellRenderDetails } from '../common/types';
 import { Cell } from './Cell';
 
 const ZONE_WIDTH = 16;
@@ -9,18 +10,6 @@ function shuffleArray(array: any[]) {
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
-
-/**
- * Approximate runtime:
- * - 25x25: 90ms
- * - 50x50: 380ms
- * - 100x100: 1500ms
- * - 200x200: 6000ms
- * - 400x400: 25000ms
- * - 800x800: 108000ms
- *
- * ~ 0.15ms per cell (or 6000 cells per second) with linear scaling
- */
 export class WaveFunctionCollapse {
   gridWidth: number;
   gridHeight: number;
@@ -31,7 +20,11 @@ export class WaveFunctionCollapse {
   currentZone: Cell[];
   lowestEntropyCellIndex = 0;
 
-  constructor(draw: (cells: Cell[]) => void, gridWidth: number, gridHeight = gridWidth) {
+  constructor(
+    draw: (cells: CellRenderDetails[]) => void,
+    gridWidth: number,
+    gridHeight = gridWidth,
+  ) {
     this.draw = () => draw(this.cells);
     this.gridWidth = gridWidth;
     this.gridHeight = gridHeight;

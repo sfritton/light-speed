@@ -1,4 +1,4 @@
-import { CAVE_TILES, SocketTileName } from '../common/Tile';
+import { CAVE_TILES, TileName } from '../common/Tile';
 
 export class Cell {
   x: number;
@@ -29,6 +29,10 @@ export class Cell {
     ) as Cell[];
   }
 
+  get tileName() {
+    return this.entropy === 1 ? (this.domain[0] as TileName) : undefined;
+  }
+
   getPotentialSockets(direction: 'top' | 'bottom' | 'left' | 'right') {
     return this.domain.reduce<string[]>(
       (acc, tile) => [...acc, CAVE_TILES[tile].sockets[direction]],
@@ -49,7 +53,7 @@ export class Cell {
     const initialDomainSize = this.domain.length;
 
     this.domain = this.domain.filter((tileName) => {
-      const tile = CAVE_TILES[tileName as SocketTileName];
+      const tile = CAVE_TILES[tileName as TileName];
 
       if (this.top && !this.top?.getPotentialSockets('bottom').includes(tile.sockets.top))
         return false;

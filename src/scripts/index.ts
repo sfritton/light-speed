@@ -1,18 +1,16 @@
-import { Cell as CellWfc } from './wave-function-collapse/Cell';
-import { CAVE_TILES, SocketTileName } from './common/Tile';
+import { CAVE_TILES } from './common/Tile';
 import { WaveFunctionCollapse } from './wave-function-collapse/WaveFunctionCollapse';
-import { FILL_STYLES, FILL_STYLES_NEW } from './common/images';
-import { CellularAutomata, CellularAutomataCell } from './cellular-automata/CellularAutomata';
+import { FILL_STYLES } from './common/images';
+import { CellularAutomata } from './cellular-automata/CellularAutomata';
+import { CellRenderDetails } from './common/types';
 
-type Cell = CellWfc | CellularAutomataCell;
-
-const SPEED = 16;
 const ZOOM_LEVEL = 1;
 const CANVAS_WIDTH = 1024;
 const CANVAS_HEIGHT = 768;
-const CELL_SIZE = 16;
+const CELL_SIZE = 32;
 const ROWS = Math.floor((CANVAS_WIDTH / CELL_SIZE) * ZOOM_LEVEL);
 const COLUMNS = Math.floor((CANVAS_HEIGHT / CELL_SIZE) * ZOOM_LEVEL);
+const TILE_SIZE = 64;
 const GRAYS = Object.keys(CAVE_TILES).map((_, i) => {
   const brightness = 255 - i * 10;
 
@@ -21,82 +19,42 @@ const GRAYS = Object.keys(CAVE_TILES).map((_, i) => {
 
 const canvas = document.querySelector<HTMLCanvasElement>('canvas.wfc');
 const context = canvas?.getContext('2d');
-let offsetX = 0;
-let offsetY = 0;
 
-const drawCell = (cell: Cell) => {
+const drawCell = (cell: CellRenderDetails) => {
   if (!context) return;
-  const x = cell.x * CELL_SIZE - offsetX;
-  const y = cell.y * CELL_SIZE - offsetY;
+  const x = cell.x * CELL_SIZE;
+  const y = cell.y * CELL_SIZE;
 
-  if (!(cell instanceof CellWfc)) {
-    const imageDetails = FILL_STYLES_NEW[cell.tileName];
-
-    if (cell.tileName === 'DIAGONAL_BR_TO_TL' || cell.tileName === 'DIAGONAL_BL_TO_TR')
-      console.log('DIAOGNAL!');
-
-    if (!imageDetails) throw new Error(`Could not find image details for ${cell.tileName}`);
-
-    if (!imageDetails.image) return;
-
-    context.drawImage(
-      imageDetails.image,
-      imageDetails.x * 16,
-      imageDetails.y * 16,
-      16,
-      16,
-      x,
-      y,
-      CELL_SIZE,
-      CELL_SIZE,
-    );
-    // if (cell.x % 2 === 1 && cell.y % 2 === 1) {
-    // context.lineWidth = 1;
-    // context.strokeStyle = '#000';
-    // context.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
-    // context.fillStyle = cell.tileName === 'WALL' ? 'black' : 'white';
-    // context.fillRect(x - dotSize / 2, y - dotSize / 2, dotSize, dotSize);
-    // }
-    // context.fillStyle = '#000';
-    // context.fillText(`${cell.x},${cell.y}`, x + CELL_SIZE / 2, y + CELL_SIZE * 0.6);
-    return;
+  // Wave Function Collapse - uncollapsed cell
+  if (cell.entropy > 1) {
+    context.fillStyle = GRAYS[cell.entropy - 1];
+    context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
   }
 
-  if (cell.isCollapsed) {
-    const image = FILL_STYLES[CAVE_TILES[cell.domain[0]].name];
-    context.drawImage(image, x, y, CELL_SIZE, CELL_SIZE);
-    return;
-  }
+  if (!cell.tileName) return;
 
-  context.fillStyle = GRAYS[cell.domain.length - 1];
-  context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+  const imageDetails = FILL_STYLES[cell.tileName];
 
-  // context.fillStyle = '#000';
-  // context.fillText(`${cell.domain.length}`, x + CELL_SIZE / 2, y + CELL_SIZE / 2);
+  if (!imageDetails) throw new Error(`Could not find image details for ${cell.tileName}`);
+
+  if (!imageDetails.image) return;
+
+  context.drawImage(
+    imageDetails.image,
+    imageDetails.x * TILE_SIZE,
+    imageDetails.y * TILE_SIZE,
+    TILE_SIZE,
+    TILE_SIZE,
+    x,
+    y,
+    CELL_SIZE,
+    CELL_SIZE,
+  );
+
+  return;
 };
 
-const drawPlayer = () => {
-  if (!context) return;
-
-  context.fillStyle = '#000';
-  context.fillRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CELL_SIZE, CELL_SIZE);
-};
-
-const drawStepCount = (stepCount: number) => {
-  if (!context) return;
-
-  const PADDING = 16;
-
-  context.font = '20px sans-serif';
-  context.fillStyle = '#fff';
-  context.strokeStyle = '#000';
-  context.lineWidth = 4;
-  context.textAlign = 'right';
-  context.strokeText(`Step: ${stepCount}`, CANVAS_WIDTH - PADDING, PADDING + 20);
-  context.fillText(`Step: ${stepCount}`, CANVAS_WIDTH - PADDING, PADDING + 20);
-};
-
-const drawGrid = (cells: Cell[], stepCount: number) => {
+const drawGrid = (cells: CellRenderDetails[]) => {
   if (!context) return;
   context.textAlign = 'center';
   context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -104,53 +62,23 @@ const drawGrid = (cells: Cell[], stepCount: number) => {
   context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   cells.forEach((cell) => drawCell(cell));
-
-  // drawStepCount(stepCount);
-  // drawPlayer();
 };
 
 const regenerateButton = document.getElementById('regenerate') as HTMLButtonElement | null;
-const stepButton = document.getElementById('step') as HTMLButtonElement | null;
 
 let ca: CellularAutomata | undefined;
 
-const squares: CellularAutomataCell[] = [
-  { x: 0, y: 0, tileName: 'TOP_LEFT' },
-  { x: 1, y: 0, tileName: 'TOP' },
-  { x: 2, y: 0, tileName: 'TOP_RIGHT' },
-  { x: 3, y: 0, tileName: 'PILLAR_BOTTOM_RIGHT' },
-  { x: 4, y: 0, tileName: 'PILLAR_BOTTOM_LEFT' },
-  { x: 0, y: 1, tileName: 'LEFT' },
-  { x: 1, y: 1, tileName: 'FLOOR' },
-  { x: 2, y: 1, tileName: 'RIGHT' },
-  { x: 3, y: 1, tileName: 'PILLAR_TOP_RIGHT' },
-  { x: 4, y: 1, tileName: 'PILLAR_TOP_LEFT' },
-  { x: 0, y: 2, tileName: 'BOTTOM_LEFT' },
-  { x: 1, y: 2, tileName: 'BOTTOM' },
-  { x: 2, y: 2, tileName: 'BOTTOM_RIGHT' },
-  { x: 3, y: 2, tileName: 'WALL' },
-  { x: 4, y: 2, tileName: 'WALL_TWO' },
-];
-
 const generateCave = async () => {
   if (regenerateButton) regenerateButton.disabled = true;
-  if (stepButton) stepButton.disabled = true;
-  // const wfc = new WaveFunctionCollapse(drawGrid, ROWS, COLUMNS);
-  // await wfc.run(true);
-  ca = new CellularAutomata(drawGrid, ROWS, COLUMNS);
-  ca.run();
-  ca.draw();
+  const wfc = new WaveFunctionCollapse(drawGrid, ROWS, COLUMNS);
+  await wfc.run();
+  // ca = new CellularAutomata(drawGrid, ROWS + 1, COLUMNS + 1);
+  // ca.run();
+  // ca.draw();
   if (regenerateButton) regenerateButton.disabled = false;
-  if (stepButton) stepButton.disabled = false;
 };
 
 generateCave();
-
-stepButton?.addEventListener('click', () => {
-  // ca?.step(3);
-  ca?.cleanup();
-  ca?.draw();
-});
 
 regenerateButton?.addEventListener('click', () => {
   generateCave();
@@ -180,69 +108,3 @@ canvas?.addEventListener('click', (e) => {
   context.strokeStyle = '#0ff';
   context.strokeRect(cellX * CELL_SIZE, cellY * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 });
-
-// document.addEventListener('keydown', (e) => {
-//   if (!activeKeySet.has(e.key)) return;
-//   activeKeys[e.key] = true;
-//   const MIN_X = CANVAS_WIDTH / -2;
-//   const MIN_Y = CANVAS_HEIGHT / -2;
-//   const MAX_X = CANVAS_WIDTH * (ZOOM_LEVEL - 0.5) - CELL_SIZE;
-//   const MAX_Y = CANVAS_HEIGHT * (ZOOM_LEVEL - 0.5) - CELL_SIZE;
-//   switch (e.key) {
-//     case 'ArrowRight':
-//       e.preventDefault();
-//       offsetX += SPEED;
-//       if (offsetX > MAX_X) {
-//         offsetX = MAX_X;
-//       }
-//       break;
-//     case 'ArrowLeft':
-//       e.preventDefault();
-//       offsetX -= SPEED;
-//       if (offsetX < MIN_X) offsetX = MIN_X;
-//       break;
-//     case 'ArrowDown':
-//       e.preventDefault();
-//       offsetY += SPEED;
-//       if (offsetY > MAX_Y) offsetY = MAX_Y;
-//       break;
-//     case 'ArrowUp':
-//       e.preventDefault();
-//       offsetY -= SPEED;
-//       if (offsetY < MIN_Y) offsetY = MIN_Y;
-//       break;
-//   }
-//   ca?.draw();
-// });
-
-const activeKeys = {
-  ArrowRight: 0,
-  ArrowLeft: 0,
-  ArrowUp: 0,
-  ArrowDown: 0,
-};
-
-const activeKeySet = new Set(Object.keys(activeKeys));
-
-document.addEventListener('keyup', (e) => {
-  if (!activeKeySet.has(e.key)) return;
-  e.preventDefault();
-  activeKeys[e.key] = 0;
-});
-
-document.addEventListener('keydown', (e) => {
-  if (!activeKeySet.has(e.key)) return;
-  e.preventDefault();
-  activeKeys[e.key] = 1;
-});
-
-const move = () => {
-  const upForce = activeKeys.ArrowUp;
-  const downForce = activeKeys.ArrowDown;
-  const leftForce = activeKeys.ArrowLeft;
-  const rightForce = activeKeys.ArrowRight;
-
-  const verticalForce = downForce - upForce;
-  const horizontalForce = rightForce - leftForce;
-  // TODO: convert to movement, call once per frame
-};
