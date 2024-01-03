@@ -4,7 +4,7 @@ main {
 
   max-width: calc(var(--canvas-width) + calc(var(--gap) * 2));
   padding: var(--gap);
-  margin: min(10vw, 80px) auto 0;
+  margin: 20px auto 0;
 
   & .tiles {
     width: 224px;
@@ -30,13 +30,42 @@ main {
 
 
   & .wfc {
-    margin: var(--gap) 0;
     display: block;
     max-width: 100%;
   }
 
-  & #download,
-  & #regenerate {
+  & .form {
+    @media (min-width: 668px) {
+      display: flex;
+      gap: var(--gap);
+    }
+  }
+
+  & label {
+    display: grid;
+    margin: var(--gap) 0;
+    gap: 8px;
+    grid-template-rows: auto auto;
+
+    &[for="show-grid"] {
+      align-items: center;
+      grid-template-rows: auto;
+      grid-template-columns: auto 1fr;
+    }
+  }
+
+  & select,
+  & input {
+    font-size: 14px;
+    padding: 8px 16px;
+    color: #fff;
+    background: #000;
+    min-height: 36px;
+    border: 1px solid #d6d6d6;
+    font-family: monospace;
+  }
+
+  & button {
     padding: 8px 16px;
     display: inline-flex;
     justify-content: center;
@@ -45,17 +74,16 @@ main {
     border-radius: 0;
     font-size: 16px;
     background: #fc9;
-    width: 140px;
+    min-width: 140px;
     cursor: pointer;
     transition: background 300ms, opacity 300ms 600ms;
     position: relative;
     color: #333;
 
     &[disabled] {
-      opacity: 0;
+      opacity: 0.5;
       transition-delay: 0ms;
-      pointer-events: none;
-      cursor: initial;
+      cursor: not-allowed;
     }
 
     &::after {
@@ -69,7 +97,7 @@ main {
       transform: scaleX(0);
     }
 
-    &:hover {
+    &:hover:not([disabled]) {
       background: rgb(255, 214, 174);
 
       &::after {

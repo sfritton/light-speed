@@ -29,15 +29,21 @@
       </div>
         <h2>Demo</h2>
       <canvas class="wfc" width="1024" height="768">hello</canvas>
-      <label for="algorithm">Algorithm</label>
-      <select id="algorithm">
-        <option value="cellular-automata">Cellular Automata</option>
-        <option value="wave-function-collapse">Wave Function Collapse</option>
-      </select>
-      <label for="seed">Seed</label>
-      <input id="seed">
-      <label for="show-grid">Show grid</label>
-      <input id="show-grid" type="checkbox"/>
+      <div class="form">
+      <label for="algorithm">Algorithm
+        <select id="algorithm">
+          <option value="cellular-automata">Cellular Automata</option>
+          <option value="wave-function-collapse">Wave Function Collapse</option>
+        </select>
+      </label>
+      <label for="seed">
+        Seed
+        <input id="seed">
+      </label>
+      <label for="show-grid">
+        <input id="show-grid" type="checkbox"/>
+        Show grid
+      </label></div>
       <button id="regenerate" disabled>Regenerate</button>
       <button id="download" disabled>Download Image</button>
     </main>

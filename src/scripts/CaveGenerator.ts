@@ -95,10 +95,8 @@ export class CaveGenerator {
 
   drawGrid = (cells: CellRenderDetails[]) => {
     if (!this.context) return;
-    this.context.textAlign = 'center';
+
     this.context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    this.context.fillStyle = '#8b6150';
-    this.context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     cells.forEach((cell) => this.drawCell(cell));
 
