@@ -4,9 +4,9 @@ import { Cell } from './Cell';
 const ZONE_WIDTH = 16;
 const ZONE_HEIGHT = 12;
 
-function shuffleArray(array: any[]) {
+function shuffleArray(array: any[], rng: () => number) {
   for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(rng() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
@@ -19,17 +19,20 @@ export class WaveFunctionCollapse {
   uncollapsedCells: Cell[];
   currentZone: Cell[];
   lowestEntropyCellIndex = 0;
+  rng: () => number;
 
   constructor(
     draw: (cells: CellRenderDetails[]) => void,
+    rng: () => number,
     gridWidth: number,
     gridHeight = gridWidth,
   ) {
     this.draw = () => draw(this.cells);
+    this.rng = rng;
     this.gridWidth = gridWidth;
     this.gridHeight = gridHeight;
     this.cells = [...new Array(gridWidth * gridHeight)].map(
-      (_, i) => new Cell(i % gridWidth, Math.floor(i / gridWidth)),
+      (_, i) => new Cell(i % gridWidth, Math.floor(i / gridWidth), this.rng),
     );
     this.cells.forEach((cell) => cell.setNeighbors(this.cells, gridWidth, gridHeight));
     this.setCurrentZone(0, 0);
@@ -41,7 +44,7 @@ export class WaveFunctionCollapse {
       [],
     );
     this.uncollapsedCells = this.currentZone.filter((cell) => !cell.isCollapsed);
-    shuffleArray(this.uncollapsedCells);
+    shuffleArray(this.uncollapsedCells, this.rng);
   }
 
   run = (drawSteps = false) => {
@@ -78,7 +81,7 @@ export class WaveFunctionCollapse {
   runZone = (x: number, y: number) => {
     this.setCurrentZone(x, y);
     // choose random cell and collapse
-    const index = Math.floor(Math.random() * this.uncollapsedCells.length);
+    const index = Math.floor(this.rng() * this.uncollapsedCells.length);
     const cell = this.uncollapsedCells[index];
     cell.collapse();
 
@@ -89,7 +92,7 @@ export class WaveFunctionCollapse {
   runZoneAsync = async (x: number, y: number) => {
     this.setCurrentZone(x, y);
     // choose random cell and collapse
-    const index = Math.floor(Math.random() * this.uncollapsedCells.length);
+    const index = Math.floor(this.rng() * this.uncollapsedCells.length);
     const cell = this.uncollapsedCells[index];
     cell.collapse();
 

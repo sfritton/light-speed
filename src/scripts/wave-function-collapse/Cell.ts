@@ -3,15 +3,17 @@ import { CAVE_TILES, TileName } from '../common/Tile';
 export class Cell {
   x: number;
   y: number;
+  rng: () => number;
   domain: string[];
   top?: Cell;
   bottom?: Cell;
   left?: Cell;
   right?: Cell;
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, rng: () => number) {
     this.x = x;
     this.y = y;
+    this.rng = rng;
     this.domain = Object.keys(CAVE_TILES) as string[];
   }
 
@@ -76,7 +78,7 @@ export class Cell {
 
   collapse = () => {
     // Choose a random tile from the domain, based on the weight of each tile
-    const randomNumber = Math.random();
+    const randomNumber = this.rng();
     const totalWeight = this.domain.reduce((sum, tile) => sum + CAVE_TILES[tile].weight, 0);
     let chosenTile: string | undefined = undefined;
     let runningSum = 0;

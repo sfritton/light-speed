@@ -23,9 +23,11 @@ export class CellularAutomata {
   floodChecks: boolean[];
   caveSizes: number[];
   wallTwos: boolean[]; // render wall_two if it's a wall
+  rng: () => number;
 
   constructor(
     draw: (cells: CellRenderDetails[]) => void,
+    rng: () => number,
     gridWidth: number,
     gridHeight = gridWidth,
   ) {
@@ -33,9 +35,10 @@ export class CellularAutomata {
     this.gridHeight = gridHeight;
     this.drawFn = draw;
     this.stepCount = 0;
+    this.rng = rng;
 
-    this.cells = [...new Array(gridWidth * gridHeight)].map(() => Math.random() > WALL_THRESHOLD);
-    this.wallTwos = this.cells.map(() => Math.random() > 0.9);
+    this.cells = [...new Array(gridWidth * gridHeight)].map(() => rng() > WALL_THRESHOLD);
+    this.wallTwos = this.cells.map(() => rng() > 0.9);
     this.floodChecks = this.cells.map(() => false);
     this.caveSizes = this.cells.map(() => 0);
   }
@@ -236,8 +239,8 @@ export class CellularAutomata {
 
   run = () => {
     console.log(
-      `Generating a ${this.gridWidth}x${this.gridHeight} grid (${
-        this.gridWidth * this.gridHeight
+      `Generating a ${this.gridWidth - 1}x${this.gridHeight - 1} grid (${
+        (this.gridWidth - 1) * (this.gridHeight - 1)
       } cells) with ${TOTAL_STEPS} steps …`,
     );
     this.startTime = new Date().getTime();

@@ -21,6 +21,7 @@
   "devDependencies": {
     "@parcel/transformer-inline-string": "^2.9.3",
     "@types/debounce": "^1.2.1",
+    "@types/seedrandom": "^3.0.8",
     "parcel": "^2.9.3",
     "posthtml-doctype": "^1.1.1",
     "posthtml-include": "^1.7.4",
@@ -42,6 +43,6 @@
   },
   "dependencies": {
     "debounce": "^1.2.1",
-    "html2canvas": "^1.4.1"
+    "seedrandom": "^3.0.5"
   }
 }

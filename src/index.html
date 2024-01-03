@@ -17,21 +17,29 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles/index.css" />
-    <link rel="stylesheet" href="./styles/wave-function-collapse.css" />
+    <link rel="stylesheet" href="./styles/cave-generator.css" />
   </head>
   <body>
     <main>
       <h1>Cave Generator</h1>
       <h2>Tiles</h2>
+      <div class="tiles">
         <img id="cave_tiles" src="./img/cave_tiles/cave_tiles.png" />
       </div>
-      <div class="demo-header">
-        <h2>Demo</h2>
-        <div>
-          <button id="regenerate" disabled>Regenerate</button>
-        </div>
       </div>
+        <h2>Demo</h2>
       <canvas class="wfc" width="1024" height="768">hello</canvas>
+      <label for="algorithm">Algorithm</label>
+      <select id="algorithm">
+        <option value="cellular-automata">Cellular Automata</option>
+        <option value="wave-function-collapse">Wave Function Collapse</option>
+      </select>
+      <label for="seed">Seed</label>
+      <input id="seed">
+      <label for="show-grid">Show grid</label>
+      <input id="show-grid" type="checkbox"/>
+      <button id="regenerate" disabled>Regenerate</button>
+      <button id="download" disabled>Download Image</button>
     </main>
     <include src="./src/parts/footer.part.html"></include>
     <script type="module" src="./scripts/index.ts"></script>
