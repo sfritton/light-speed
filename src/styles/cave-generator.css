@@ -1,6 +1,7 @@
 main {
   --gap: 20px;
   --canvas-width: 1024px;
+  --radius: 2px;
 
   max-width: calc(var(--canvas-width) + calc(var(--gap) * 2));
   padding: var(--gap);
@@ -41,6 +42,7 @@ main {
     align-items: center;
     font-size: 14px;
     cursor: pointer;
+    transition: color 300ms;
 
     & input {
       opacity: 0;
@@ -58,6 +60,10 @@ main {
       width: 20px;
       height: 20px;
       position: relative;
+      border-radius: var(--radius);
+      outline: 2px solid transparent;
+      outline-offset: -1px;
+      transition: outline 300ms;
     }
 
     & input:checked ~ .checkbox:after {
@@ -81,17 +87,13 @@ main {
 
       & .checkbox {
         outline: 2px solid #fc9;
-        outline-offset: -1px;
       }
     }
   }
 
-  & .form {
-    @media (min-width: 668px) {
-      display: flex;
-      gap: var(--gap);
-      align-items: flex-end;
-    }
+  .form {
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   .input {
@@ -99,6 +101,7 @@ main {
     margin: var(--gap) 0;
     gap: 8px;
     grid-template-rows: auto auto;
+    transition: color 300ms;
 
     & label {
       font-size: 14px;
@@ -115,6 +118,10 @@ main {
       border: 1px solid #d6d6d6;
       font-family: var(--mono);
       cursor: pointer;
+      border-radius: var(--radius);
+      outline-offset: -1px;
+      outline: 2px solid transparent;
+      transition: outline 300ms;
     }
 
     &:has(input:hover),
@@ -126,8 +133,19 @@ main {
       & input,
       & select {
         outline: 2px solid #fc9;
-        outline-offset: -1px;
       }
+    }
+  }
+
+  & .buttons {
+    margin-top: calc(2 * var(--gap));
+    display: grid;
+    gap: var(--gap);
+    grid-template-rows: 1fr 1fr;
+
+    @media (min-width: 500px) {
+      grid-template-rows: auto;
+      grid-template-columns: 1fr 1fr;
     }
   }
 
@@ -138,7 +156,8 @@ main {
     justify-content: center;
     align-items: center;
     border: none;
-    border-radius: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
     font-size: 16px;
     background: #fc9;
     min-width: 140px;
@@ -161,7 +180,7 @@ main {
       width: 100%;
       height: 4px;
       bottom: 0;
-      transition: transform 300ms;
+      transition: transform 300ms, background 300ms;
       transform: scaleX(0);
     }
 
@@ -173,8 +192,36 @@ main {
       }
     }
 
-    &:active {
+    &:active:not([disabled]) {
       background: #f96;
+    }
+
+    &.secondary {
+      background: #000;
+      border: 1px solid #fc9;
+      color: #fc9;
+      transition: color 300ms, border-color 300ms, opacity 300ms 600ms;
+
+      &::after {
+        height: 3px;
+        background: rgb(255, 214, 174);
+      }
+
+      &:hover:not([disabled]) {
+        color: rgb(255, 214, 174);
+        background: #000;
+        border-color: rgb(255, 214, 174);
+      }
+
+      &:active:not([disabled]) {
+        color: #f96;
+        border-color: #f96;
+        background: #000;
+        
+        &::after {
+          background: #f96;
+        }
+      }
     }
   }
 }
