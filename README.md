@@ -1,10 +1,10 @@
-# Wave Function Collapse
+# Cave Generator
 
-An exploration into using the Wave Function Collapse algorithm to generate caves.
+An exploration into generating caves with the Wave Function Collapse and Cellular Automata algorithms.
 
-Check out the [deployed site](https://sfritton.github.io/wave-function-collapse).
+Check out the [deployed site](https://sfritton.github.io/cave-generator).
 
-![A procedurally generated cave](screenshot.png)
+![A cave generated with Wave Function Collapse](screenshot.png)
 
 ## Running it locally
 

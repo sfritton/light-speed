@@ -10,12 +10,6 @@
       content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=2, interactive-widget=overlays-content"
     />
     <link rel="icon" href="./img/favicon-52.png" sizes="52x52" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="./styles/index.css" />
     <link rel="stylesheet" href="./styles/cave-generator.css" />
   </head>
@@ -29,22 +23,25 @@
       </div>
         <h2>Demo</h2>
       <canvas class="wfc" width="1024" height="768">hello</canvas>
-      <div class="form">
-      <label for="algorithm">Algorithm
-        <select id="algorithm">
-          <option value="cellular-automata">Cellular Automata</option>
-          <option value="wave-function-collapse">Wave Function Collapse</option>
-        </select>
-      </label>
-      <label for="seed">
-        Seed
-        <input id="seed">
-      </label>
       <label for="show-grid">
         <input id="show-grid" type="checkbox"/>
+        <div class="checkbox"></div>
         Show grid
-      </label></div>
-      <button id="regenerate" disabled>Regenerate</button>
+      </label>
+      <div class="form">
+        <div class="input">
+          <label for="algorithm">Algorithm</label>
+          <select id="algorithm">
+            <option value="cellular-automata">Cellular Automata</option>
+            <option value="wave-function-collapse">Wave Function Collapse</option>
+          </select>
+        </div>
+        <div class="input">
+          <label for="seed">Seed</label>
+          <input id="seed">
+        </div>
+      </div>
+      <button id="regenerate" disabled>Re-generate</button>
       <button id="download" disabled>Download Image</button>
     </main>
     <include src="./src/parts/footer.part.html"></include>

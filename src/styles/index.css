@@ -3,8 +3,7 @@
 :root {
   --link-color: #155b98;
   --link-color-hover: #1c79ca;
-  --serif: "Zilla Slab", serif;
-  --sans: Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }
 
 *, *::after, *::before {
@@ -12,14 +11,14 @@
 }
 
 body {
-  font-family: var(--sans);
+  font-family: var(--mono);
   color: #fff;
   background: #000;
   margin: 0;
 }
 
 h1, h2, h3, h4, h5 {
-  font-family: var(--serif);
+  font-weight: normal;
 }
 
 h1 {
