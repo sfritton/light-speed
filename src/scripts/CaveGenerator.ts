@@ -1,5 +1,4 @@
-import { FILL_STYLES } from './common/images';
-import { CANVAS_HEIGHT, CANVAS_WIDTH, GRAYS, TILE_SIZE } from './constants';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, GRAYS, TILE_IMAGE_COORDINATES, TILE_SIZE } from './constants';
 import { CellRenderDetails } from './common/types';
 import { CellularAutomata } from './cellular-automata/CellularAutomata';
 import { WaveFunctionCollapse } from './wave-function-collapse/WaveFunctionCollapse';
@@ -9,6 +8,7 @@ export type GenerationAlgorithm = 'cellular-automata' | 'wave-function-collapse'
 
 export class CaveGenerator {
   context: CanvasRenderingContext2D | null | undefined;
+  caveTilesImg: HTMLImageElement | null;
   drawCave: () => void;
   algorithm: GenerationAlgorithm;
   _showGrid: boolean = false;
@@ -17,10 +17,11 @@ export class CaveGenerator {
 
   constructor(
     context: CanvasRenderingContext2D | null | undefined,
-    algorithm: GenerationAlgorithm = 'cellular-automata',
+    caveTilesImg: HTMLImageElement | null,
   ) {
     this.context = context;
-    this.algorithm = algorithm;
+    this.caveTilesImg = caveTilesImg;
+    this.algorithm = 'cellular-automata';
   }
 
   set showGrid(showGrid: boolean) {
@@ -59,18 +60,16 @@ export class CaveGenerator {
       this.context.fillRect(x, y, this._cellSize, this._cellSize);
     }
 
-    if (!cell.tileName) return;
+    if (!cell.tileName || !this.caveTilesImg) return;
 
-    const imageDetails = FILL_STYLES[cell.tileName];
+    const imageCoordinates = TILE_IMAGE_COORDINATES[cell.tileName];
 
-    if (!imageDetails) throw new Error(`Could not find image details for ${cell.tileName}`);
-
-    if (!imageDetails.image) return;
+    if (!imageCoordinates) throw new Error(`Could not find image coordinates for ${cell.tileName}`);
 
     this.context.drawImage(
-      imageDetails.image,
-      imageDetails.x * TILE_SIZE,
-      imageDetails.y * TILE_SIZE,
+      this.caveTilesImg,
+      imageCoordinates.x * TILE_SIZE,
+      imageCoordinates.y * TILE_SIZE,
       TILE_SIZE,
       TILE_SIZE,
       x,

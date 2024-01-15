@@ -1,6 +1,9 @@
 import { CaveGenerator, GenerationAlgorithm } from './CaveGenerator';
+// @ts-expect-error -- TS doesn't understand Parcel's ability to import image files
+import caveTiles from '../img/cave_tiles/cave_tiles.png';
 
 // DOM elements
+const caveTilesImg = document.getElementById('cave_tiles') as HTMLImageElement | null;
 const canvas = document.querySelector<HTMLCanvasElement>('canvas.wfc');
 const context = canvas?.getContext('2d');
 
@@ -12,7 +15,7 @@ const sizeSelector = document.getElementById('size') as HTMLSelectElement | null
 const regenerateButton = document.getElementById('regenerate') as HTMLButtonElement | null;
 const downloadButton = document.getElementById('download') as HTMLButtonElement | null;
 
-const caveGenerator = new CaveGenerator(context);
+const caveGenerator = new CaveGenerator(context, caveTilesImg);
 
 const generateCave = async () => {
   if (regenerateButton) regenerateButton.disabled = true;
@@ -29,7 +32,14 @@ const generateCave = async () => {
   if (downloadButton) downloadButton.disabled = false;
 };
 
-generateCave();
+if (caveTilesImg) {
+  caveTilesImg.onload = () => {
+    generateCave();
+  };
+  caveTilesImg.src = caveTiles;
+} else {
+  console.error("Couldn't find tileset img");
+}
 
 // Event listeners
 showGridCheckbox?.addEventListener('change', (e) => {
