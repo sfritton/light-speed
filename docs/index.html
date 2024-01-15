@@ -7,65 +7,41 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=2, interactive-widget=overlays-content">
     <link rel="icon" href="favicon-52.e56febcd.png" sizes="52x52">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.9427fcf5.css">
-    <link rel="stylesheet" href="index.323176e7.css">
+    <link rel="stylesheet" href="index.100f3ecf.css">
+    <link rel="stylesheet" href="index.3c1fce3b.css">
   </head>
   <body>
     <main>
       <h1>Cave Generator</h1>
       <h2>Tiles</h2>
-      <div class="tileset">
-        <div class="tiles">
-          <img id="top_left" src="sprite_00.e9f863e2.png">
-          <img id="top" src="sprite_01.cc6d2caf.png">
-          <img id="top_right" src="sprite_02.5b2331cc.png">
-          <img id="pillar_bottom_right" src="sprite_03.d78d5d0f.png">
-          <img id="pillar_bottom_left" src="sprite_04.8292642b.png">
-          <img id="left" src="sprite_05.c91267e7.png">
-          <img id="floor" src="sprite_06.8ed39959.png">
-          <img id="right" src="sprite_07.db02a72f.png">
-          <img id="pillar_top_right" src="sprite_08.0ebe345e.png">
-          <img id="pillar_top_left" src="sprite_09.710e9909.png">
-          <img id="bottom_left" src="sprite_10.9da5914e.png">
-          <img id="bottom" src="sprite_11.4344e69e.png">
-          <img id="bottom_right" src="sprite_12.b18b4415.png">
-          <img id="wall" src="sprite_13.580fd452.png">
-          <img id="wall_two" src="sprite_14.a4d5c608.png">
-        </div>
-        <div class="tiles">
-          <img id="ledge_top_left" src="pit_00.1d1b66a3.png">
-          <img id="ledge_top" src="pit_01.cc6d2caf.png">
-          <img id="ledge_top_right" src="pit_02.1a9063cd.png">
-          <img id="ledge_pillar_bottom_right" src="pit_03.3258c443.png">
-          <img id="ledge_pillar_bottom_left" src="pit_04.dc014c45.png">
-          <img id="ledge_left" src="pit_05.c60907f8.png">
-          <img src="sprite_06.8ed39959.png">
-          <img id="ledge_right" src="pit_06.3066bb38.png">
-          <img id="ledge_pillar_top_right" src="pit_07.b942d4cf.png">
-          <img id="ledge_pillar_top_left" src="pit_08.bb91494a.png">
-          <img id="ledge_bottom_left" src="pit_09.d902a5e1.png">
-          <img id="ledge_bottom" src="pit_10.ecb2d683.png">
-          <img id="ledge_bottom_right" src="pit_11.ce918601.png">
-        </div>
-        <div class="tiles" style="--columns: 4">
-          <img id="ledge_left_ramp_top" src="ramp_0.e134e813.png">
-          <img id="ledge_right_ramp_top" src="ramp_1.e7945285.png">
-          <img id="ledge_top_ramp_left" src="ramp_2.35df8be7.png">
-          <img id="ledge_top_ramp_right" src="ramp_3.cdb60287.png">
-          <img id="ledge_left_ramp_bottom" src="ramp_6.506ac69a.png">
-          <img id="ledge_right_ramp_bottom" src="ramp_7.ef84bff6.png">
-          <img id="ledge_bottom_ramp_left" src="ramp_4.3c466e2c.png">
-          <img id="ledge_bottom_ramp_right" src="ramp_5.dff329f7.png">
-        </div>
+      <div class="tiles">
+        <img id="cave_tiles" src="cave_tiles.38aee0ad.png">
       </div>
-      <div class="demo-header">
+      
         <h2>Demo</h2>
-        <button id="regenerate" disabled="">Regenerate</button>
-      </div>
       <canvas class="wfc" width="1024" height="768">hello</canvas>
+      <div class="form">
+        <label for="show-grid">
+          <input id="show-grid" type="checkbox">
+          <div class="checkbox"></div>
+          Show grid
+        </label>
+        <div class="input">
+          <label for="algorithm">Algorithm</label>
+          <select id="algorithm">
+            <option value="cellular-automata">Cellular Automata</option>
+            <option value="wave-function-collapse">Wave Function Collapse</option>
+          </select>
+        </div>
+        <div class="input">
+          <label for="seed">Seed</label>
+          <input id="seed">
+        </div>
+        <div class="buttons">
+          <button id="regenerate" class="secondary" disabled="">Re-generate</button>
+          <button id="download" disabled="">Download Image</button>
+        </div>
+      </div>
     </main>
     <footer id="footer">
   <div>
@@ -80,6 +56,6 @@
   </div>
 </footer>
 
-    <script type="module" src="index.aefb8fe6.js"></script>
+    <script type="module" src="index.940a5221.js"></script>
   </body>
 </html>
