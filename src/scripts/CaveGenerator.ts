@@ -1,13 +1,5 @@
 import { FILL_STYLES } from './common/images';
-import {
-  CANVAS_HEIGHT,
-  CANVAS_WIDTH,
-  CELL_SIZE,
-  COLUMNS,
-  GRAYS,
-  ROWS,
-  TILE_SIZE,
-} from './constants';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, GRAYS, TILE_SIZE } from './constants';
 import { CellRenderDetails } from './common/types';
 import { CellularAutomata } from './cellular-automata/CellularAutomata';
 import { WaveFunctionCollapse } from './wave-function-collapse/WaveFunctionCollapse';
@@ -20,6 +12,7 @@ export class CaveGenerator {
   drawCave: () => void;
   algorithm: GenerationAlgorithm;
   _showGrid: boolean = false;
+  _cellSize: number = 64;
   seed: string | undefined;
 
   constructor(
@@ -36,19 +29,34 @@ export class CaveGenerator {
     this.drawCave();
   }
 
+  set cellSize(size: string | undefined) {
+    switch (size) {
+      case 'large':
+        this._cellSize = 16;
+        return;
+      case 'medium':
+        this._cellSize = 32;
+        return;
+      case 'small':
+      default:
+        this._cellSize = 64;
+        return;
+    }
+  }
+
   get showGrid() {
     return this._showGrid;
   }
 
   drawCell = (cell: CellRenderDetails) => {
     if (!this.context) return;
-    const x = cell.x * CELL_SIZE;
-    const y = cell.y * CELL_SIZE;
+    const x = cell.x * this._cellSize;
+    const y = cell.y * this._cellSize;
 
     // Wave Function Collapse - uncollapsed cell
     if (cell.entropy > 1) {
       this.context.fillStyle = GRAYS[cell.entropy - 1];
-      this.context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+      this.context.fillRect(x, y, this._cellSize, this._cellSize);
     }
 
     if (!cell.tileName) return;
@@ -67,8 +75,8 @@ export class CaveGenerator {
       TILE_SIZE,
       x,
       y,
-      CELL_SIZE,
-      CELL_SIZE,
+      this._cellSize,
+      this._cellSize,
     );
   };
 
@@ -79,12 +87,12 @@ export class CaveGenerator {
     this.context.lineWidth = 0.25;
     this.context.beginPath();
 
-    for (let x = 0; x < CANVAS_WIDTH; x += CELL_SIZE) {
+    for (let x = 0; x < CANVAS_WIDTH; x += this._cellSize) {
       this.context.moveTo(x, 0);
       this.context.lineTo(x, CANVAS_HEIGHT);
     }
 
-    for (let y = 0; y < CANVAS_HEIGHT; y += CELL_SIZE) {
+    for (let y = 0; y < CANVAS_HEIGHT; y += this._cellSize) {
       this.context.moveTo(0, y);
       this.context.lineTo(CANVAS_WIDTH, y);
     }
@@ -105,14 +113,16 @@ export class CaveGenerator {
 
   generate = async () => {
     const rng = this.seed ? seedrandom(this.seed) : Math.random;
+    const rows = Math.floor(CANVAS_WIDTH / this._cellSize);
+    const columns = Math.floor(CANVAS_HEIGHT / this._cellSize);
 
     if (this.algorithm === 'cellular-automata') {
-      const ca = new CellularAutomata(this.drawGrid, rng, ROWS + 1, COLUMNS + 1);
+      const ca = new CellularAutomata(this.drawGrid, rng, rows + 1, columns + 1);
       ca.run();
       ca.draw();
       this.drawCave = () => ca.draw();
     } else {
-      const wfc = new WaveFunctionCollapse(this.drawGrid, rng, ROWS, COLUMNS);
+      const wfc = new WaveFunctionCollapse(this.drawGrid, rng, rows, columns);
       await wfc.run(true);
       this.drawCave = () => wfc.draw();
     }
