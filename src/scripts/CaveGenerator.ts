@@ -75,8 +75,8 @@ export class CaveGenerator {
   drawGridLines = () => {
     if (!this.context || !this.showGrid) return;
 
-    this.context.strokeStyle = '#935e4c';
-    this.context.lineWidth = 0.5;
+    this.context.strokeStyle = '#333';
+    this.context.lineWidth = 0.25;
     this.context.beginPath();
 
     for (let x = 0; x < CANVAS_WIDTH; x += CELL_SIZE) {
@@ -113,7 +113,7 @@ export class CaveGenerator {
       this.drawCave = () => ca.draw();
     } else {
       const wfc = new WaveFunctionCollapse(this.drawGrid, rng, ROWS, COLUMNS);
-      await wfc.run();
+      await wfc.run(true);
       this.drawCave = () => wfc.draw();
     }
   };

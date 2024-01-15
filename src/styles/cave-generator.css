@@ -2,6 +2,7 @@ main {
   --gap: 20px;
   --canvas-width: 1024px;
   --radius: 2px;
+  --hover-shadow: 0px 0px 8px 2px #fc9;
 
   max-width: calc(var(--canvas-width) + calc(var(--gap) * 2));
   padding: var(--gap);
@@ -63,7 +64,7 @@ main {
       border-radius: var(--radius);
       outline: 2px solid transparent;
       outline-offset: -1px;
-      transition: outline 300ms;
+      transition: outline 300ms, box-shadow 300ms;
     }
 
     & input:checked ~ .checkbox:after {
@@ -88,6 +89,10 @@ main {
       & .checkbox {
         outline: 2px solid #fc9;
       }
+    }
+
+    &:hover .checkbox {
+      box-shadow: var(--hover-shadow);
     }
   }
 
@@ -121,7 +126,11 @@ main {
       border-radius: var(--radius);
       outline-offset: -1px;
       outline: 2px solid transparent;
-      transition: outline 300ms;
+      transition: outline 300ms, box-shadow 300ms;
+
+      &:hover {
+        box-shadow: var(--hover-shadow);
+      }
     }
 
     &:has(input:hover),
@@ -200,7 +209,11 @@ main {
       background: #000;
       border: 1px solid #fc9;
       color: #fc9;
-      transition: color 300ms, border-color 300ms, opacity 300ms 600ms;
+      transition: color 300ms, border-color 300ms, opacity 300ms 600ms, box-shadow 300ms;
+
+      &[disabled] {
+        transition-delay: 0;
+      }
 
       &::after {
         height: 3px;
@@ -211,6 +224,7 @@ main {
         color: rgb(255, 214, 174);
         background: #000;
         border-color: rgb(255, 214, 174);
+        box-shadow: var(--hover-shadow);
       }
 
       &:active:not([disabled]) {
