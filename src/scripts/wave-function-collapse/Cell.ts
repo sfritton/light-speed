@@ -3,6 +3,8 @@ import { CAVE_TILES, TileName } from '../common/Tile';
 export class Cell {
   x: number;
   y: number;
+  gridWidth: number;
+  gridHeight: number;
   rng: () => number;
   domain: string[];
   top?: Cell;
@@ -10,11 +12,22 @@ export class Cell {
   left?: Cell;
   right?: Cell;
 
-  constructor(x: number, y: number, rng: () => number) {
+  constructor(x: number, y: number, rng: () => number, gridWidth: number, gridHeight: number) {
     this.x = x;
     this.y = y;
     this.rng = rng;
+    this.gridWidth = gridWidth;
+    this.gridHeight = gridHeight;
     this.domain = Object.keys(CAVE_TILES) as string[];
+
+    if (
+      this.x === 0 ||
+      this.y === 0 ||
+      this.x === this.gridWidth - 1 ||
+      this.y === this.gridHeight - 1
+    ) {
+      this.domain = ['WALL', 'WALL_TWO'];
+    }
   }
 
   get isCollapsed() {
@@ -42,11 +55,13 @@ export class Cell {
     );
   }
 
-  setNeighbors = (cells: Cell[], gridWidth: number, gridHeight = gridWidth) => {
-    this.top = this.y === 0 ? undefined : cells[this.x + gridWidth * (this.y - 1)];
-    this.bottom = this.y === gridHeight - 1 ? undefined : cells[this.x + gridWidth * (this.y + 1)];
-    this.left = this.x === 0 ? undefined : cells[this.x - 1 + gridWidth * this.y];
-    this.right = this.x === gridWidth - 1 ? undefined : cells[this.x + 1 + gridWidth * this.y];
+  setNeighbors = (cells: Cell[]) => {
+    this.top = this.y === 0 ? undefined : cells[this.x + this.gridWidth * (this.y - 1)];
+    this.bottom =
+      this.y === this.gridHeight - 1 ? undefined : cells[this.x + this.gridWidth * (this.y + 1)];
+    this.left = this.x === 0 ? undefined : cells[this.x - 1 + this.gridWidth * this.y];
+    this.right =
+      this.x === this.gridWidth - 1 ? undefined : cells[this.x + 1 + this.gridWidth * this.y];
   };
 
   updateDomain = (forceUpdateNeighbors = false) => {

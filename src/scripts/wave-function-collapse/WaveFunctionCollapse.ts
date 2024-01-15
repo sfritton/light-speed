@@ -32,9 +32,9 @@ export class WaveFunctionCollapse {
     this.gridWidth = gridWidth;
     this.gridHeight = gridHeight;
     this.cells = [...new Array(gridWidth * gridHeight)].map(
-      (_, i) => new Cell(i % gridWidth, Math.floor(i / gridWidth), this.rng),
+      (_, i) => new Cell(i % gridWidth, Math.floor(i / gridWidth), this.rng, gridWidth, gridHeight),
     );
-    this.cells.forEach((cell) => cell.setNeighbors(this.cells, gridWidth, gridHeight));
+    this.cells.forEach((cell) => cell.setNeighbors(this.cells));
     this.setCurrentZone(0, 0);
   }
 
