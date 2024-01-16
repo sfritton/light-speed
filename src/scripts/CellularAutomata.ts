@@ -1,7 +1,6 @@
-import { TileName } from '../common/Tile';
-import { CellRenderDetails } from '../common/types';
+import { TileName } from './constants';
 
-export interface CellularAutomataCell {
+export interface CellRenderDetails {
   x: number;
   y: number;
   tileName: TileName;
@@ -67,7 +66,6 @@ export class CellularAutomata {
             tileName === 'WALL' && this.wallTwos[this.getIndexFromCoordinates(x, y)]
               ? 'WALL_TWO'
               : tileName,
-          entropy: 1,
         };
       }),
     );
@@ -106,6 +104,7 @@ export class CellularAutomata {
     if (topLeft && topRight && !bottomLeft && bottomRight) return 'PILLAR_BOTTOM_LEFT';
     if (topLeft && topRight && bottomLeft && !bottomRight) return 'PILLAR_BOTTOM_RIGHT';
 
+    // Diagonals
     if (!topLeft && topRight && bottomLeft && !bottomRight) return 'DIAGONAL_BR_TO_TL';
     if (topLeft && !topRight && !bottomLeft && bottomRight) return 'DIAGONAL_BL_TO_TR';
 

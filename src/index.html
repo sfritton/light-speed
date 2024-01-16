@@ -18,7 +18,7 @@
       <h1>Cave Generator</h1>
       <h2>Tiles</h2>
       <div class="tiles">
-        <img id="cave_tiles" src="./img/cave_tiles/cave_tiles.png" />
+        <img id="cave_tiles" src="./img/cave_tiles.png" />
       </div>
       </div>
         <h2>Demo</h2>
@@ -30,23 +30,16 @@
           Show grid
         </label>
         <div class="input">
-          <label for="algorithm">Algorithm</label>
-          <select id="algorithm">
-            <option value="cellular-automata">Cellular Automata</option>
-            <option value="wave-function-collapse">Wave Function Collapse</option>
-          </select>
-        </div>
-        <div class="input">
-          <label for="seed">Seed</label>
-          <input id="seed">
-        </div>
-        <div class="input">
           <label for="size">Size</label>
           <select id="size">
             <option value="small">Small</option>
             <option value="medium">Medium</option>
             <option value="large">Large</option>
           </select>
+        </div>
+        <div class="input">
+          <label for="seed">Seed</label>
+          <input id="seed">
         </div>
         <div class="buttons">
           <button id="regenerate" class="secondary" disabled>Re-generate</button>

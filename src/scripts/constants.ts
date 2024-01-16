@@ -1,18 +1,8 @@
-import { CAVE_TILES, TileName } from './common/Tile';
-
 export const CANVAS_WIDTH = 2048;
 export const CANVAS_HEIGHT = 1536;
 export const TILE_SIZE = 64;
 
-const caveTileKeys = Object.keys(CAVE_TILES);
-
-export const GRAYS = caveTileKeys.map((_, i) => {
-  const brightness = 255 - i * (255 / (caveTileKeys.length - 1));
-
-  return `rgb(${brightness} ${brightness} ${brightness})`;
-});
-
-export const TILE_IMAGE_COORDINATES: Record<TileName, { x: number; y: number }> = {
+export const TILE_IMAGE_COORDINATES = {
   TOP_LEFT: { x: 0, y: 0 },
   TOP: { x: 1, y: 0 },
   TOP_RIGHT: { x: 2, y: 0 },
@@ -30,4 +20,6 @@ export const TILE_IMAGE_COORDINATES: Record<TileName, { x: number; y: number }> 
   WALL_TWO: { x: 6, y: 2 },
   DIAGONAL_BL_TO_TR: { x: 6, y: 0 },
   DIAGONAL_BR_TO_TL: { x: 6, y: 1 },
-};
+} as const;
+
+export type TileName = keyof typeof TILE_IMAGE_COORDINATES;

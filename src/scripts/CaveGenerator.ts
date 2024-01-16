@@ -1,16 +1,11 @@
-import { CANVAS_HEIGHT, CANVAS_WIDTH, GRAYS, TILE_IMAGE_COORDINATES, TILE_SIZE } from './constants';
-import { CellRenderDetails } from './common/types';
-import { CellularAutomata } from './cellular-automata/CellularAutomata';
-import { WaveFunctionCollapse } from './wave-function-collapse/WaveFunctionCollapse';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, TILE_IMAGE_COORDINATES, TILE_SIZE } from './constants';
+import { CellularAutomata, CellRenderDetails } from './CellularAutomata';
 import seedrandom from 'seedrandom';
-
-export type GenerationAlgorithm = 'cellular-automata' | 'wave-function-collapse';
 
 export class CaveGenerator {
   context: CanvasRenderingContext2D | null | undefined;
   caveTilesImg: HTMLImageElement | null;
   drawCave: () => void;
-  algorithm: GenerationAlgorithm;
   _showGrid: boolean = false;
   _cellSize: number = 64;
   seed: string | undefined;
@@ -21,7 +16,6 @@ export class CaveGenerator {
   ) {
     this.context = context;
     this.caveTilesImg = caveTilesImg;
-    this.algorithm = 'cellular-automata';
   }
 
   set showGrid(showGrid: boolean) {
@@ -53,12 +47,6 @@ export class CaveGenerator {
     if (!this.context) return;
     const x = cell.x * this._cellSize;
     const y = cell.y * this._cellSize;
-
-    // Wave Function Collapse - uncollapsed cell
-    if (cell.entropy > 1) {
-      this.context.fillStyle = GRAYS[cell.entropy - 1];
-      this.context.fillRect(x, y, this._cellSize, this._cellSize);
-    }
 
     if (!cell.tileName || !this.caveTilesImg) return;
 
@@ -115,15 +103,9 @@ export class CaveGenerator {
     const rows = Math.floor(CANVAS_WIDTH / this._cellSize);
     const columns = Math.floor(CANVAS_HEIGHT / this._cellSize);
 
-    if (this.algorithm === 'cellular-automata') {
-      const ca = new CellularAutomata(this.drawGrid, rng, rows + 1, columns + 1);
-      ca.run();
-      ca.draw();
-      this.drawCave = () => ca.draw();
-    } else {
-      const wfc = new WaveFunctionCollapse(this.drawGrid, rng, rows, columns);
-      await wfc.run(true);
-      this.drawCave = () => wfc.draw();
-    }
+    const ca = new CellularAutomata(this.drawGrid, rng, rows + 1, columns + 1);
+    ca.run();
+    ca.draw();
+    this.drawCave = () => ca.draw();
   };
 }

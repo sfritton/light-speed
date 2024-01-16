@@ -10,7 +10,7 @@ main {
 
   & .tiles {
     width: 224px;
-    height: 96px;
+    height: 192px;
     position: relative;
 
     & #cave_tiles {

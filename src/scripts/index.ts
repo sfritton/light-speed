@@ -1,6 +1,6 @@
-import { CaveGenerator, GenerationAlgorithm } from './CaveGenerator';
+import { CaveGenerator } from './CaveGenerator';
 // @ts-expect-error -- TS doesn't understand Parcel's ability to import image files
-import caveTiles from '../img/cave_tiles/cave_tiles.png';
+import caveTiles from '../img/cave_tiles.png';
 
 // DOM elements
 const caveTilesImg = document.getElementById('cave_tiles') as HTMLImageElement | null;
@@ -8,9 +8,8 @@ const canvas = document.querySelector<HTMLCanvasElement>('canvas.wfc');
 const context = canvas?.getContext('2d');
 
 const showGridCheckbox = document.getElementById('show-grid') as HTMLInputElement | null;
-const algorithmSelector = document.getElementById('algorithm') as HTMLSelectElement | null;
-const seedInput = document.getElementById('seed') as HTMLInputElement | null;
 const sizeSelector = document.getElementById('size') as HTMLSelectElement | null;
+const seedInput = document.getElementById('seed') as HTMLInputElement | null;
 
 const regenerateButton = document.getElementById('regenerate') as HTMLButtonElement | null;
 const downloadButton = document.getElementById('download') as HTMLButtonElement | null;
@@ -21,10 +20,8 @@ const generateCave = async () => {
   if (regenerateButton) regenerateButton.disabled = true;
   if (downloadButton) downloadButton.disabled = true;
 
-  caveGenerator.algorithm =
-    (algorithmSelector?.value as GenerationAlgorithm | null) ?? 'cellular-automata';
-  caveGenerator.seed = seedInput?.value || undefined;
   caveGenerator.cellSize = sizeSelector?.value;
+  caveGenerator.seed = seedInput?.value || undefined;
 
   await caveGenerator.generate();
 
@@ -38,7 +35,7 @@ if (caveTilesImg) {
   };
   caveTilesImg.src = caveTiles;
 } else {
-  console.error("Couldn't find tileset img");
+  throw new Error("Couldn't find tileset img");
 }
 
 // Event listeners
