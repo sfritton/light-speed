@@ -4,7 +4,7 @@ import caveTiles from '../img/cave_tiles.png';
 
 // DOM elements
 const caveTilesImg = document.getElementById('cave_tiles') as HTMLImageElement | null;
-const canvas = document.querySelector<HTMLCanvasElement>('canvas.wfc');
+const canvas = document.querySelector<HTMLCanvasElement>('canvas.cave-generator');
 const context = canvas?.getContext('2d');
 
 const showGridCheckbox = document.getElementById('show-grid') as HTMLInputElement | null;
@@ -16,17 +16,11 @@ const downloadButton = document.getElementById('download') as HTMLButtonElement 
 
 const caveGenerator = new CaveGenerator(context, caveTilesImg);
 
-const generateCave = async () => {
-  if (regenerateButton) regenerateButton.disabled = true;
-  if (downloadButton) downloadButton.disabled = true;
-
+const generateCave = () => {
   caveGenerator.cellSize = sizeSelector?.value;
   caveGenerator.seed = seedInput?.value || undefined;
 
-  await caveGenerator.generate();
-
-  if (regenerateButton) regenerateButton.disabled = false;
-  if (downloadButton) downloadButton.disabled = false;
+  caveGenerator.generate();
 };
 
 if (caveTilesImg) {

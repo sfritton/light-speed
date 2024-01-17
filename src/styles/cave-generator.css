@@ -10,12 +10,14 @@ main {
 
   & .tiles {
     width: 224px;
-    height: 192px;
+    height: 96px;
     position: relative;
 
     & #cave_tiles {
       width: 100%;
       height: 100%;
+      object-fit: cover;
+      object-position: left top;
     }
 
     &::after {
@@ -31,10 +33,10 @@ main {
   }
 
 
-  & .wfc {
+  & .cave-generator {
     display: block;
     max-width: 100%;
-    margin-bottom: calc(var(--gap) * 2);
+    margin: var(--gap) 0;
   }
 
   & label[for="show-grid"] {
@@ -44,6 +46,7 @@ main {
     font-size: 14px;
     cursor: pointer;
     transition: color 300ms;
+    flex-shrink: 0;
 
     & input {
       opacity: 0;
@@ -97,17 +100,39 @@ main {
   }
 
   .form {
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 640px;
+    margin: 0 auto var(--gap);
+    display: flex;
+    gap: var(--gap);
+    flex-direction: column;
+
+    @media (min-width: 668px) {
+      backdrop-filter: blur(2px);
+      gap: 32px;
+      flex-direction: row;
+      position: sticky;
+      background: #000a;
+      bottom: 8px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   .input {
     display: grid;
-    margin: var(--gap) 0;
     gap: 8px;
     grid-template-rows: auto auto;
     transition: color 300ms;
     position: relative;
+    flex-grow: 1;
+
+    @media (min-width: 668px) {
+      grid-template-rows: auto;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+    }
 
     & label {
       font-size: 14px;
@@ -162,18 +187,6 @@ main {
     }
   }
 
-  & .buttons {
-    margin-top: calc(2 * var(--gap));
-    display: grid;
-    gap: var(--gap);
-    grid-template-rows: 1fr 1fr;
-
-    @media (min-width: 500px) {
-      grid-template-rows: auto;
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
   & button {
     font-family: var(--mono);
     padding: 8px 16px;
@@ -186,11 +199,31 @@ main {
     font-size: 16px;
     background: #fc9;
     min-width: 140px;
+    flex-grow: 1;
     height: 40px;
     cursor: pointer;
     transition: background 300ms, opacity 300ms 600ms;
     position: relative;
     color: #333;
+
+    &.full-width {
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+
+      @media (min-width: 668px) {
+        max-width: 600px;
+        font-size: 18px;
+        height: 50px;
+      }
+    }
+
+    & .icon {
+      display: inline-block;
+      margin-right: 8px;
+      font-size: 24px;
+      padding-bottom: 2px;
+    }
 
     &[disabled] {
       opacity: 0.5;
@@ -254,4 +287,17 @@ main {
       }
     }
   }
+
+  & section {
+    max-width: 600px;
+    margin: 0 auto;
+
+    &.how-it-works img {
+      max-width: 100%;
+      margin: var(--gap) 0;
+      display: block;
+      aspect-ratio: 4 / 3;
+    }
+  }
+
 }

@@ -98,7 +98,7 @@ export class CaveGenerator {
     this.drawGridLines();
   };
 
-  generate = async () => {
+  generate = () => {
     const rng = this.seed ? seedrandom(this.seed) : Math.random;
     const rows = Math.floor(CANVAS_WIDTH / this._cellSize);
     const columns = Math.floor(CANVAS_HEIGHT / this._cellSize);
