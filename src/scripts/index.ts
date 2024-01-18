@@ -9,23 +9,15 @@ const context = canvas?.getContext('2d');
 
 const showGridCheckbox = document.getElementById('show-grid') as HTMLInputElement | null;
 const sizeSelector = document.getElementById('size') as HTMLSelectElement | null;
-const seedInput = document.getElementById('seed') as HTMLInputElement | null;
 
 const regenerateButton = document.getElementById('regenerate') as HTMLButtonElement | null;
 const downloadButton = document.getElementById('download') as HTMLButtonElement | null;
 
 const caveGenerator = new CaveGenerator(context, caveTilesImg);
 
-const generateCave = () => {
-  caveGenerator.cellSize = sizeSelector?.value;
-  caveGenerator.seed = seedInput?.value || undefined;
-
-  caveGenerator.generate();
-};
-
 if (caveTilesImg) {
   caveTilesImg.onload = () => {
-    generateCave();
+    caveGenerator.generate();
   };
   caveTilesImg.src = caveTiles;
 } else {
@@ -36,11 +28,19 @@ if (caveTilesImg) {
 showGridCheckbox?.addEventListener('change', (e) => {
   const target = e.target as HTMLInputElement | null;
   if (!target) return;
+
   caveGenerator.showGrid = target.checked;
 });
 
+sizeSelector?.addEventListener('change', (e) => {
+  const target = e.target as HTMLSelectElement | null;
+  if (!target) return;
+
+  caveGenerator.cellSize = target.value;
+});
+
 regenerateButton?.addEventListener('click', () => {
-  generateCave();
+  caveGenerator.generate();
 });
 
 downloadButton?.addEventListener('click', () => {

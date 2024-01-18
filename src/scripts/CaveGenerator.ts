@@ -8,7 +8,6 @@ export class CaveGenerator {
   drawCave: () => void;
   _showGrid: boolean = false;
   _cellSize: number = 64;
-  seed: string | undefined;
 
   constructor(
     context: CanvasRenderingContext2D | null | undefined,
@@ -24,19 +23,28 @@ export class CaveGenerator {
     this.drawCave();
   }
 
+  get seed() {
+    const params = new URLSearchParams(window.location.search);
+    const seed = params.get('seed');
+
+    return seed;
+  }
+
   set cellSize(size: string | undefined) {
     switch (size) {
       case 'large':
         this._cellSize = 16;
-        return;
+        break;
       case 'medium':
         this._cellSize = 32;
-        return;
+        break;
       case 'small':
       default:
         this._cellSize = 64;
-        return;
+        break;
     }
+
+    this.generate();
   }
 
   get showGrid() {

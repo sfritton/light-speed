@@ -35,9 +35,13 @@ export class CellularAutomata {
     this.drawFn = draw;
     this.stepCount = 0;
     this.rng = rng;
+  }
 
-    this.cells = [...new Array(gridWidth * gridHeight)].map(() => rng() > WALL_THRESHOLD);
-    this.wallTwos = this.cells.map(() => rng() > 0.9);
+  initCells() {
+    this.cells = [...new Array(this.gridWidth * this.gridHeight)].map(
+      () => this.rng() > WALL_THRESHOLD,
+    );
+    this.wallTwos = this.cells.map(() => this.rng() > 0.9);
     this.floodChecks = this.cells.map(() => false);
     this.caveSizes = this.cells.map(() => 0);
   }
@@ -236,13 +240,17 @@ export class CellularAutomata {
     return [...caveTiles, index, ...topTiles, ...bottomTiles, ...leftTiles, ...rightTiles];
   }
 
-  run = () => {
-    console.log(
-      `Generating a ${this.gridWidth - 1}x${this.gridHeight - 1} grid (${
-        (this.gridWidth - 1) * (this.gridHeight - 1)
-      } cells) with ${TOTAL_STEPS} steps …`,
-    );
-    this.startTime = new Date().getTime();
+  run = (isRetry = false) => {
+    if (!isRetry) {
+      console.log(
+        `Generating a ${this.gridWidth - 1}x${this.gridHeight - 1} grid (${
+          (this.gridWidth - 1) * (this.gridHeight - 1)
+        } cells) with ${TOTAL_STEPS} steps …`,
+      );
+      this.startTime = new Date().getTime();
+    }
+
+    this.initCells();
 
     while (this.stepCount < TOTAL_STEPS - SOFTENING_STEPS) {
       this.step();
@@ -261,6 +269,11 @@ export class CellularAutomata {
 
     this.fillSmallCaves();
 
-    console.log(`Finished in ${new Date().getTime() - this.startTime}ms`);
+    if (this.cells.every((isFloor) => !isFloor)) {
+      console.log('Blank cave generated, retrying …');
+      this.run(true);
+    }
+
+    if (!isRetry) console.log(`Finished in ${new Date().getTime() - this.startTime}ms`);
   };
 }
