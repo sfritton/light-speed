@@ -40,10 +40,11 @@ sizeSelector?.addEventListener('change', (e) => {
 });
 
 regenerateButton?.addEventListener('click', () => {
-  // Remove seeds when regenerating
   const params = new URLSearchParams(window.location.search);
+
   if (params.size) {
-    window.history.pushState({}, document.title, '/');
+    // Remove seed when regenerating
+    window.history.pushState({}, document.title, document.location.pathname);
   }
 
   caveGenerator.generate();
