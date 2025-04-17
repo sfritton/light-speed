@@ -1,0 +1,18 @@
+main {
+  --gap: 20px;
+  --canvas-width: 1024px;
+  max-width: calc(var(--canvas-width)  + calc(var(--gap) * 2));
+  padding: var(--gap);
+  margin: 20px auto 0;
+}
+
+main canvas {
+  margin: var(--gap) 0;
+  background: radial-gradient(circle at 20% 80%, #1048, #0000 55%), radial-gradient(circle at 60% 20%, #0038, #0000 45%), radial-gradient(circle at 80% 60%, #0148, #0000 45%), radial-gradient(circle, #002, #0000);
+  border-radius: 8px;
+  max-width: 100%;
+  display: block;
+  position: relative;
+}
+
+/*# sourceMappingURL=index.08c63405.css.map */
