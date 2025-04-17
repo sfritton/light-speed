@@ -1,0 +1,22 @@
+main {
+  --gap: 20px;
+  --canvas-width: 1024px;
+
+  max-width: calc(var(--canvas-width) + calc(var(--gap) * 2));
+  padding: var(--gap);
+  margin: 20px auto 0;
+
+  & canvas {
+    border-radius: 8px;
+    position: relative;
+    display: block;
+    max-width: 100%;
+    margin: var(--gap) 0;
+    background:
+      radial-gradient(circle at 20% 80%, #1048, transparent 55%),
+      radial-gradient(circle at 60% 20%, #0038, transparent 45%),
+      radial-gradient(circle at 80% 60%, #0148, transparent 45%),
+      radial-gradient(circle, #002, transparent);
+  }
+
+}

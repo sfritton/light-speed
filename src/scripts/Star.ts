@@ -67,8 +67,6 @@ export class Star {
     const y2 =
       this.y + this.y * Math.min((this.length + distanceToOrigin) / distanceToOrigin, 1) * speed;
 
-    // console.log({ x1: this.x, y1: this.y, x2, y2 });
-
     if (this.x > 1 || this.x < -1 || this.y > 1 || this.y < -1) {
       this.init({ startAtOrigin: true });
       return;

@@ -3,7 +3,6 @@
 :root {
   --link-color: #fc9;
   --link-color-hover: rgb(255, 214, 174);
-  --mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }
 
 *, *::after, *::before {
@@ -11,7 +10,7 @@
 }
 
 body {
-  font-family: var(--mono);
+  font-family: system-ui;
   color: #fff;
   background: #000;
   margin: 0;

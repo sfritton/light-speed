@@ -1,10 +1,8 @@
-# Cave Generator
+# Light Speed
 
-An exploration into generating caves with the Cellular Automata algorithm.
+An exploration into creating a light speed animation.
 
-Check out the [deployed site](https://sfritton.github.io/cave-generator).
-
-![A cave generated with Cellular Automata](cave.png)
+Check out the [deployed site](https://sfritton.github.io/light-speed).
 
 ## Running it locally
 
