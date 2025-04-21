@@ -75,10 +75,10 @@ export class LightSpeed {
     return MIN_SPEED;
   }
 
-  log() {
-    if (!this.isDebugMode || this.elapsedT <= 0) return;
+  get fps() {
+    if (this.elapsedT <= 0) return 0;
 
-    console.log(`FPS: ${Math.round(this.frames / this.elapsedT)}`);
+    return Math.round(this.frames / this.elapsedT);
   }
 
   update(currMS: number) {
@@ -97,13 +97,22 @@ export class LightSpeed {
 
     this.draw();
 
-    this.log();
-
     requestAnimationFrame(this.update.bind(this));
   }
 
   draw() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.stars.forEach((star) => star.draw(this.context, this.canvas, this.speed));
+
+    if (!this.isDebugMode) return;
+
+    this.context.fillStyle = '#000d';
+    this.context.beginPath();
+    this.context.rect(0, 0, 300, 120);
+    this.context.fill();
+
+    this.context.font = '48px monospace';
+    this.context.fillStyle = '#fff';
+    this.context.fillText(`FPS: ${this.fps}`, 30, 80);
   }
 }
