@@ -1,15 +1,15 @@
 import { Star } from './Star';
+import { STAR_COUNT, SPEED, MIN_SPEED } from './constants';
 
-const STAR_COUNT = 500;
-const SPEED = 0.0008;
-const ACCELERATION = 0.4;
+function easeInOutQuad(x: number): number {
+  return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+}
 
 export class LightSpeed {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   stars: Star[] = [];
   prevMS = 0;
-  speed = 0;
   elapsedT = 0;
 
   constructor(canvas: HTMLCanvasElement | null) {
@@ -29,6 +29,31 @@ export class LightSpeed {
     requestAnimationFrame(this.update.bind(this));
   }
 
+  get speed() {
+    let relativeT = this.elapsedT;
+
+    // Wait 500ms before starting the animation
+    if (relativeT < 0.5) return MIN_SPEED;
+
+    relativeT -= 0.5;
+
+    // 3s of acceleration
+    if (relativeT < 3) return MIN_SPEED + easeInOutQuad(relativeT / 3);
+
+    relativeT -= 3;
+
+    // 2s of top speed
+    if (relativeT < 3) return 1 + MIN_SPEED;
+
+    relativeT -= 3;
+
+    // 3s of deceleration
+    if (relativeT < 3) return 1 + MIN_SPEED - easeInOutQuad(relativeT / 3);
+
+    // Stop
+    return MIN_SPEED;
+  }
+
   update(currMS: number) {
     if (this.prevMS === 0) {
       this.prevMS = currMS;
@@ -39,13 +64,11 @@ export class LightSpeed {
 
     // Time in seconds
     this.elapsedT += deltaT / 1000;
-    this.speed = -Math.cos(this.elapsedT * ACCELERATION) + 1;
 
     this.stars.forEach((star) => star.move(deltaT, SPEED * this.speed));
 
     this.draw();
 
-    if (this.elapsedT > 5 && this.speed <= 0.001) return;
     requestAnimationFrame(this.update.bind(this));
   }
 
