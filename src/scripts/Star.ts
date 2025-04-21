@@ -1,12 +1,9 @@
 import { MIN_SPEED } from './constants';
 
-const MIN_OPACITY = 0.2;
 const STAR_LENGTH_MIN = 10;
 const STAR_LENGTH_MAX = 60;
 const STAR_SIZE = 0.4;
-const COLORS = ['255,255,255', '204,204,255', '170,170,255', '221,221,255'];
 
-const lerp = (value: number, min: number, max: number) => min + value * (max - min);
 const randomRange = (min: number, max: number) => Math.random() * (max - min) + min;
 const randomItem = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
 const normalize = (x: number, y: number) => {
@@ -24,9 +21,10 @@ export class Star {
   directionX: number;
   directionY: number;
   length: number;
-  color: string;
+  color: CanvasGradient;
 
-  constructor() {
+  constructor(gradients: CanvasGradient[]) {
+    this.color = randomItem(gradients);
     this.init();
   }
 
@@ -54,7 +52,6 @@ export class Star {
     if (this.isOutOfBounds) return this.init({ startAtOrigin });
 
     this.length = randomRange(STAR_LENGTH_MIN, STAR_LENGTH_MAX);
-    this.color = randomItem(COLORS);
   }
 
   get isOutOfBounds() {
@@ -96,12 +93,10 @@ export class Star {
     const renderX2 = x2 * centerX + centerX;
     const renderY2 = y2 * centerY + centerY;
 
-    const alpha = lerp(this.distanceToOrigin, MIN_OPACITY, 1);
-
     context.beginPath();
     context.moveTo(renderX, renderY);
     context.lineTo(renderX2, renderY2);
-    context.strokeStyle = `rgba(${this.color},${alpha})`;
+    context.strokeStyle = this.color;
     context.lineWidth = this.length * STAR_SIZE * this.distanceToOrigin;
     context.lineCap = 'round';
     context.stroke();

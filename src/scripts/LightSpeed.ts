@@ -1,5 +1,5 @@
 import { Star } from './Star';
-import { STAR_COUNT, SPEED, MIN_SPEED } from './constants';
+import { STAR_COUNT, SPEED, MIN_SPEED, COLORS, MIN_OPACITY } from './constants';
 
 function easeInOutQuad(x: number): number {
   return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
@@ -11,6 +11,9 @@ export class LightSpeed {
   stars: Star[] = [];
   prevMS = 0;
   elapsedT = 0;
+  gradients: CanvasGradient[];
+  frames = 0;
+  isDebugMode = false;
 
   constructor(canvas: HTMLCanvasElement | null) {
     if (!canvas) throw new Error('Canvas cannot be null');
@@ -21,10 +24,28 @@ export class LightSpeed {
     if (!context) throw new Error('Canvas context cannot be null or undefined');
 
     this.context = context;
+
+    const radius = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
+    this.gradients = COLORS.map((color) => {
+      const gradient = context.createRadialGradient(
+        canvas.width / 2,
+        canvas.height / 2,
+        0,
+        canvas.width / 2,
+        canvas.height / 2,
+        radius,
+      );
+      gradient.addColorStop(0, `rgba(${color}, ${MIN_OPACITY})`);
+      gradient.addColorStop(0.55, `rgba(${color}, 1)`);
+
+      return gradient;
+    });
+
+    this.isDebugMode = location.search.includes('debug');
   }
 
   init() {
-    this.stars = Array.from({ length: STAR_COUNT }).map(() => new Star());
+    this.stars = Array.from({ length: STAR_COUNT }).map(() => new Star(this.gradients));
 
     requestAnimationFrame(this.update.bind(this));
   }
@@ -54,6 +75,12 @@ export class LightSpeed {
     return MIN_SPEED;
   }
 
+  log() {
+    if (!this.isDebugMode || this.elapsedT <= 0) return;
+
+    console.log(`FPS: ${Math.round(this.frames / this.elapsedT)}`);
+  }
+
   update(currMS: number) {
     if (this.prevMS === 0) {
       this.prevMS = currMS;
@@ -64,10 +91,13 @@ export class LightSpeed {
 
     // Time in seconds
     this.elapsedT += deltaT / 1000;
+    this.frames++;
 
     this.stars.forEach((star) => star.move(deltaT, SPEED * this.speed));
 
     this.draw();
+
+    this.log();
 
     requestAnimationFrame(this.update.bind(this));
   }
