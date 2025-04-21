@@ -108,11 +108,11 @@ export class LightSpeed {
 
     this.context.fillStyle = '#000d';
     this.context.beginPath();
-    this.context.rect(0, 0, 300, 120);
+    this.context.rect(0, 0, 650, 120);
     this.context.fill();
 
     this.context.font = '48px monospace';
     this.context.fillStyle = '#fff';
-    this.context.fillText(`FPS: ${this.fps}`, 30, 80);
+    this.context.fillText(`${STAR_COUNT} stars at ${this.fps} fps`, 30, 80);
   }
 }
