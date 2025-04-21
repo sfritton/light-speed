@@ -1,22 +1,27 @@
 main {
-  --gap: 20px;
-  --canvas-width: 1024px;
+  --gap: 16px;
 
-  max-width: calc(var(--canvas-width) + calc(var(--gap) * 2));
-  padding: var(--gap);
-  margin: 20px auto 0;
+  & h1 {
+    position: sticky;
+    bottom: 0;
+    margin: var(--gap);
+    display: inline-block;
+    padding: var(--gap) calc(var(--gap) * 2);
+    border-radius: 8px 8px 0 0;
+    background: #000a;
+    backdrop-filter: blur(4px);
+  }
 
   & canvas {
-    border-radius: 8px;
-    position: relative;
     display: block;
-    max-width: 100%;
-    margin: var(--gap) 0;
+    width: 100vw;
+    height: 100vh;
     background:
       radial-gradient(circle at 20% 80%, #1048, transparent 55%),
       radial-gradient(circle at 60% 20%, #0038, transparent 45%),
       radial-gradient(circle at 80% 60%, #0148, transparent 45%),
-      radial-gradient(circle, #002, transparent);
+      radial-gradient(circle, #002, transparent),
+      #000;
   }
 
 }
