@@ -97,18 +97,11 @@ export class Star {
     const renderY2 = y2 * centerY + centerY;
 
     const alpha = lerp(this.distanceToOrigin, MIN_OPACITY, 1);
-    const alpha2 = lerp(Math.sqrt(x2 * x2 + y2 * y2), MIN_OPACITY, 1);
-
-    const gradient = context.createLinearGradient(renderX, renderY, renderX2, renderY2);
-    gradient.addColorStop(0, `rgba(${this.color},${alpha})`);
-    gradient.addColorStop(1, `rgba(${this.color},${alpha2})`);
-
-    const isMoving = speed > MIN_SPEED;
 
     context.beginPath();
     context.moveTo(renderX, renderY);
     context.lineTo(renderX2, renderY2);
-    context.strokeStyle = isMoving ? gradient : `rgba(${this.color},${alpha})`;
+    context.strokeStyle = `rgba(${this.color},${alpha})`;
     context.lineWidth = this.length * STAR_SIZE * this.distanceToOrigin;
     context.lineCap = 'round';
     context.stroke();
