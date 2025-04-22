@@ -102,17 +102,19 @@ export class LightSpeed {
 
   draw() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.globalCompositeOperation = 'color-dodge';
     this.stars.forEach((star) => star.draw(this.context, this.canvas, this.speed));
 
     if (!this.isDebugMode) return;
 
+    this.context.globalCompositeOperation = 'source-over';
     this.context.fillStyle = '#000d';
     this.context.beginPath();
-    this.context.rect(0, 0, 650, 120);
+    this.context.rect(0, 0, 300, 70);
     this.context.fill();
 
-    this.context.font = '48px monospace';
+    this.context.font = '20px monospace';
     this.context.fillStyle = '#fff';
-    this.context.fillText(`${STAR_COUNT} stars at ${this.fps} fps`, 30, 80);
+    this.context.fillText(`${STAR_COUNT} stars at ${this.fps} fps`, 20, 40);
   }
 }
