@@ -14,6 +14,7 @@ export class LightSpeed {
   gradients: CanvasGradient[];
   frames = 0;
   isDebugMode = false;
+  boundUpdate: (currMS: number) => void;
 
   constructor(canvas: HTMLCanvasElement | null) {
     if (!canvas) throw new Error('Canvas cannot be null');
@@ -47,7 +48,10 @@ export class LightSpeed {
   init() {
     this.stars = Array.from({ length: STAR_COUNT }).map(() => new Star(this.gradients));
 
-    requestAnimationFrame(this.update.bind(this));
+    // Bind the update method once instead of on every frame
+    this.boundUpdate = this.update.bind(this);
+
+    requestAnimationFrame(this.boundUpdate);
   }
 
   get speed() {
@@ -97,7 +101,7 @@ export class LightSpeed {
 
     this.draw();
 
-    requestAnimationFrame(this.update.bind(this));
+    requestAnimationFrame(this.boundUpdate);
   }
 
   draw() {
