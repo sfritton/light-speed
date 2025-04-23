@@ -128,11 +128,12 @@ export class LightSpeed {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.globalCompositeOperation = 'color-dodge';
     this.context.lineCap = 'round';
-    this.context.lineWidth = STAR_SIZE_PX;
 
     for (let i = 0; i < this.gradients.length; i++) {
       this.context.beginPath();
       this.context.strokeStyle = this.gradients[i];
+      const mobileFactor = this.canvas.width < 668 ? 0.5 : 1;
+      this.context.lineWidth = STAR_SIZE_PX * (i + 1) * mobileFactor;
 
       for (let j = i; j < this.stars.length; j += this.gradients.length) {
         this.stars[j].draw(this.context, this.speed, centerX, centerY);
