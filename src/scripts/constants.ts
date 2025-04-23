@@ -8,5 +8,5 @@ export const STAR_LENGTH_MIN = 10;
 export const STAR_SIZE = 0.04;
 export const STAR_SIZE_PX = 4;
 export const STARS_PER_PX = 0.001;
-export const MIN_STARS = 500;
+export const MIN_STARS = 1000;
 export const MAX_STAR_RESPAWN_DELAY = 1000 / SPEED; // ms
