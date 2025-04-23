@@ -1,5 +1,15 @@
 import { Star } from './Star';
-import { STAR_COUNT, SPEED, MIN_SPEED, COLORS, MIN_OPACITY } from './constants';
+import {
+  STAR_COUNT,
+  SPEED,
+  MIN_SPEED,
+  COLORS,
+  MIN_OPACITY,
+  STAR_SIZE,
+  STAR_SIZE_PX,
+  STARS_PER_PX,
+  MIN_STARS,
+} from './constants';
 
 function easeInOutQuad(x: number): number {
   return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
@@ -15,6 +25,7 @@ export class LightSpeed {
   frames = 0;
   isDebugMode = false;
   boundUpdate: (currMS: number) => void;
+  starCount: number;
 
   constructor(canvas: HTMLCanvasElement | null) {
     if (!canvas) throw new Error('Canvas cannot be null');
@@ -25,6 +36,10 @@ export class LightSpeed {
     if (!context) throw new Error('Canvas context cannot be null or undefined');
 
     this.context = context;
+    this.starCount = Math.max(
+      Math.floor(this.canvas.width * this.canvas.height * STARS_PER_PX),
+      MIN_STARS,
+    );
 
     const radius = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
     this.gradients = COLORS.map((color) => {
@@ -36,7 +51,7 @@ export class LightSpeed {
         canvas.height / 2,
         radius,
       );
-      gradient.addColorStop(0, `rgba(${color}, ${MIN_OPACITY})`);
+      gradient.addColorStop(0.01, `rgba(${color}, ${MIN_OPACITY})`);
       gradient.addColorStop(0.4, `rgba(${color}, 1)`);
 
       return gradient;
@@ -46,7 +61,7 @@ export class LightSpeed {
   }
 
   init() {
-    this.stars = Array.from({ length: STAR_COUNT }).map(() => new Star(this.gradients));
+    this.stars = Array.from({ length: this.starCount }).map(() => new Star(this.gradients));
 
     // Bind the update method once instead of on every frame
     this.boundUpdate = this.update.bind(this);
@@ -97,7 +112,9 @@ export class LightSpeed {
     this.elapsedT += deltaT / 1000;
     this.frames++;
 
-    this.stars.forEach((star) => star.move(deltaT, SPEED * this.speed));
+    for (let i = 0; i < this.stars.length; i++) {
+      this.stars[i].move(deltaT, SPEED * this.speed);
+    }
 
     this.draw();
 
@@ -105,9 +122,23 @@ export class LightSpeed {
   }
 
   draw() {
+    const centerX = this.canvas.width / 2;
+    const centerY = this.canvas.height / 2;
+
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.globalCompositeOperation = 'color-dodge';
-    this.stars.forEach((star) => star.draw(this.context, this.canvas, this.speed));
+    this.context.lineCap = 'round';
+    this.context.lineWidth = STAR_SIZE_PX;
+
+    for (let i = 0; i < this.gradients.length; i++) {
+      this.context.beginPath();
+      this.context.strokeStyle = this.gradients[i];
+
+      for (let j = i; j < this.stars.length; j += this.gradients.length) {
+        this.stars[j].draw(this.context, this.speed, centerX, centerY);
+      }
+      this.context.stroke();
+    }
 
     if (!this.isDebugMode) return;
 
@@ -119,6 +150,6 @@ export class LightSpeed {
 
     this.context.font = '20px monospace';
     this.context.fillStyle = '#fff';
-    this.context.fillText(`${STAR_COUNT} stars at ${this.fps} fps`, 20, 40);
+    this.context.fillText(`${this.starCount} stars at ${this.fps} fps`, 20, 40);
   }
 }

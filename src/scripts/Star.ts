@@ -1,8 +1,10 @@
-import { MIN_SPEED } from './constants';
-
-const STAR_LENGTH_MIN = 10;
-const STAR_LENGTH_MAX = 60;
-const STAR_SIZE = 0.4;
+import {
+  MIN_SPEED,
+  STAR_LENGTH_MIN,
+  STAR_LENGTH_MAX,
+  STAR_SIZE,
+  MAX_STAR_RESPAWN_DELAY,
+} from './constants';
 
 const randomRange = (min: number, max: number) => Math.random() * (max - min) + min;
 const randomItem = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
@@ -22,6 +24,7 @@ export class Star {
   directionY: number;
   length: number;
   color: CanvasGradient;
+  isRespawning = false;
 
   constructor(gradients: CanvasGradient[]) {
     this.color = randomItem(gradients);
@@ -63,29 +66,39 @@ export class Star {
   }
 
   move(deltaT: number, speed: number) {
-    this.x += this.directionX * deltaT * speed * Math.pow(this.distanceToOrigin + 1, 2);
-    this.y += this.directionY * deltaT * speed * Math.pow(this.distanceToOrigin + 1, 2);
-  }
+    // Skip if respawning
+    if (this.isRespawning) return;
 
-  draw(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, speed: number) {
-    const x2 =
-      this.x +
-      this.x *
-        Math.min((this.length + this.distanceToOrigin) / this.distanceToOrigin, 1) *
-        (speed - MIN_SPEED);
-    const y2 =
-      this.y +
-      this.y *
-        Math.min((this.length + this.distanceToOrigin) / this.distanceToOrigin, 1) *
-        (speed - MIN_SPEED);
+    // Calcuate once, then use it for both x and y
+    const magnitude = deltaT * speed * Math.pow(this.distanceToOrigin + 1, 3);
+
+    this.x += this.directionX * magnitude;
+    this.y += this.directionY * magnitude;
 
     if (this.isOutOfBounds) {
-      this.init({ startAtOrigin: true });
-      return;
-    }
+      this.isRespawning = true;
 
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+      const delay = Math.floor(Math.random() * MAX_STAR_RESPAWN_DELAY * speed);
+
+      // Respawn at origin after a random delay
+      setTimeout(() => {
+        this.isRespawning = false;
+        this.init({ startAtOrigin: true });
+      }, delay);
+    }
+  }
+
+  draw(context: CanvasRenderingContext2D, speed: number, centerX: number, centerY: number) {
+    // Don't draw if off-screen
+    if (this.isOutOfBounds) return;
+
+    // Calculate once, then use for both x and y
+    const currentLength =
+      Math.min((this.length + this.distanceToOrigin) / this.distanceToOrigin, 1) *
+      (speed - MIN_SPEED);
+
+    const x2 = this.x + this.x * currentLength;
+    const y2 = this.y + this.y * currentLength;
 
     const renderX = this.x * centerX + centerX;
     const renderY = this.y * centerY + centerY;
@@ -93,12 +106,7 @@ export class Star {
     const renderX2 = x2 * centerX + centerX;
     const renderY2 = y2 * centerY + centerY;
 
-    context.beginPath();
     context.moveTo(renderX, renderY);
     context.lineTo(renderX2, renderY2);
-    context.strokeStyle = this.color;
-    context.lineWidth = this.length * STAR_SIZE * this.distanceToOrigin;
-    context.lineCap = 'round';
-    context.stroke();
   }
 }
