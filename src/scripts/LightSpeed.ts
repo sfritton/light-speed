@@ -75,7 +75,7 @@ export class LightSpeed {
         radius,
       );
       gradient.addColorStop(0.02, `rgba(${color}, 0)`);
-      gradient.addColorStop(0.8, `rgba(${color}, 1)`);
+      gradient.addColorStop(0.45, `rgba(${color}, 1)`);
 
       return gradient;
     });
