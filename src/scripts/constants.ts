@@ -10,4 +10,5 @@ export const MIN_STARS = 2000;
 
 export const ORIGIN_DEPTH = 10;
 export const ORIGIN_DEPTH_VARIANCE = 2;
+export const ORIGIN_RADIUS_VARIANCE = 4;
 export const PERSPECTIVE = 1000;

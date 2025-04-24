@@ -5,6 +5,7 @@ import {
   ORIGIN_DEPTH,
   ORIGIN_DEPTH_VARIANCE,
   PERSPECTIVE,
+  ORIGIN_RADIUS_VARIANCE,
 } from './constants';
 
 const randomRange = (min: number, max: number) => Math.random() * (max - min) + min;
@@ -13,6 +14,7 @@ export class Star {
   angle: number;
   z: number;
   length: number;
+  radius: number;
 
   constructor() {
     this.init();
@@ -28,14 +30,15 @@ export class Star {
 
     this.angle = randomRange(0, Math.PI * 2);
     this.length = randomRange(STAR_LENGTH_MIN, STAR_LENGTH_MAX);
+    this.radius = randomRange(1, 1 + ORIGIN_RADIUS_VARIANCE);
   }
 
   get x() {
-    return Math.cos(this.angle) / this.z;
+    return (Math.cos(this.angle) * this.radius) / this.z;
   }
 
   get y() {
-    return Math.sin(this.angle) / this.z;
+    return (Math.sin(this.angle) * this.radius) / this.z;
   }
 
   get isOutOfBounds() {
