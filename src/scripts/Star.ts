@@ -19,17 +19,14 @@ export class Star {
   }
 
   init({ startAtOrigin = false } = {}) {
-    this.angle = randomRange(0, Math.PI * 2);
-
-    if (startAtOrigin) {
-      this.z = randomRange(ORIGIN_DEPTH, ORIGIN_DEPTH + ORIGIN_DEPTH_VARIANCE);
-    } else {
-      this.z = randomRange(0, ORIGIN_DEPTH);
-    }
+    this.z = startAtOrigin
+      ? randomRange(ORIGIN_DEPTH, ORIGIN_DEPTH + ORIGIN_DEPTH_VARIANCE)
+      : randomRange(0, ORIGIN_DEPTH);
 
     // Try again if we started out of bounds
     if (this.isOutOfBounds) return this.init({ startAtOrigin });
 
+    this.angle = randomRange(0, Math.PI * 2);
     this.length = randomRange(STAR_LENGTH_MIN, STAR_LENGTH_MAX);
   }
 
