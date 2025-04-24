@@ -18,8 +18,9 @@ export class LightSpeed {
   starCount: number;
   centerX: number;
   centerY: number;
+  userPrefersReducedMotion;
 
-  constructor(canvas: HTMLCanvasElement | null) {
+  constructor(canvas: HTMLCanvasElement | null, userPrefersReducedMotion: boolean) {
     if (!canvas) throw new Error('Canvas cannot be null');
 
     this.canvas = canvas;
@@ -28,6 +29,7 @@ export class LightSpeed {
     if (!context) throw new Error('Canvas context cannot be null or undefined');
 
     this.context = context;
+    this.userPrefersReducedMotion = userPrefersReducedMotion;
 
     // Initialize canvas size
     this.onInitOrResize();
@@ -82,6 +84,8 @@ export class LightSpeed {
   }
 
   get speed() {
+    if (this.userPrefersReducedMotion) return MIN_SPEED;
+
     let relativeT = this.elapsedT;
 
     // Wait 500ms before starting the animation
