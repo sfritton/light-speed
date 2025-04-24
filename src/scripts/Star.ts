@@ -1,13 +1,6 @@
-import {
-  MIN_SPEED,
-  STAR_LENGTH_MIN,
-  STAR_LENGTH_MAX,
-  STAR_SIZE,
-  MAX_STAR_RESPAWN_DELAY,
-} from './constants';
+import { MIN_SPEED, STAR_LENGTH_MIN, STAR_LENGTH_MAX, ORIGIN_RADIUS } from './constants';
 
 const randomRange = (min: number, max: number) => Math.random() * (max - min) + min;
-const randomItem = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
 const normalize = (x: number, y: number) => {
   const distanceToOrigin = Math.sqrt(x * x + y * y);
 
@@ -23,11 +16,8 @@ export class Star {
   directionX: number;
   directionY: number;
   length: number;
-  color: CanvasGradient;
-  isRespawning = false;
 
-  constructor(gradients: CanvasGradient[]) {
-    this.color = randomItem(gradients);
+  constructor() {
     this.init();
   }
 
@@ -42,14 +32,10 @@ export class Star {
     this.directionX = normX;
     this.directionY = normY;
 
-    // Position from -1 to 1
-    if (startAtOrigin) {
-      this.x = 0;
-      this.y = 0;
-    } else {
-      this.x = randomX;
-      this.y = randomY;
-    }
+    const radius = startAtOrigin ? ORIGIN_RADIUS : 1;
+
+    this.x = randomX * radius;
+    this.y = randomY * radius;
 
     // Try again if we started out of bounds
     if (this.isOutOfBounds) return this.init({ startAtOrigin });
@@ -66,26 +52,14 @@ export class Star {
   }
 
   move(deltaT: number, speed: number) {
-    // Skip if respawning
-    if (this.isRespawning) return;
-
     // Calcuate once, then use it for both x and y
     const magnitude = deltaT * speed * Math.pow(this.distanceToOrigin + 1, 3);
 
     this.x += this.directionX * magnitude;
     this.y += this.directionY * magnitude;
 
-    if (this.isOutOfBounds) {
-      this.isRespawning = true;
-
-      const delay = Math.floor(Math.random() * MAX_STAR_RESPAWN_DELAY * speed);
-
-      // Respawn at origin after a random delay
-      setTimeout(() => {
-        this.isRespawning = false;
-        this.init({ startAtOrigin: true });
-      }, delay);
-    }
+    // If we're out of bounds, restart at the origin
+    if (this.isOutOfBounds) this.init({ startAtOrigin: true });
   }
 
   draw(context: CanvasRenderingContext2D, speed: number, centerX: number, centerY: number) {

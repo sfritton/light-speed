@@ -1,12 +1,9 @@
 export const COLORS = ['255,255,255', '204,204,255', '170,170,255', '221,221,255'];
-export const MIN_OPACITY = 0;
 export const MIN_SPEED = 0.01;
 export const SPEED = 0.0005;
-export const STAR_COUNT = 100000; // Math.max(100, Math.min(window.innerWidth - 300, 500));
 export const STAR_LENGTH_MAX = 60;
 export const STAR_LENGTH_MIN = 10;
-export const STAR_SIZE = 0.04;
 export const STAR_SIZE_PX = 1;
 export const STARS_PER_PX = 0.002;
 export const MIN_STARS = 2000;
-export const MAX_STAR_RESPAWN_DELAY = 1000 / SPEED; // ms
+export const ORIGIN_RADIUS = 0.01;

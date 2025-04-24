@@ -1,15 +1,5 @@
 import { Star } from './Star';
-import {
-  STAR_COUNT,
-  SPEED,
-  MIN_SPEED,
-  COLORS,
-  MIN_OPACITY,
-  STAR_SIZE,
-  STAR_SIZE_PX,
-  STARS_PER_PX,
-  MIN_STARS,
-} from './constants';
+import { SPEED, MIN_SPEED, COLORS, STAR_SIZE_PX, STARS_PER_PX, MIN_STARS } from './constants';
 
 function easeInOutQuad(x: number): number {
   return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
@@ -26,6 +16,8 @@ export class LightSpeed {
   isDebugMode = false;
   boundUpdate: (currMS: number) => void;
   starCount: number;
+  centerX: number;
+  centerY: number;
 
   constructor(canvas: HTMLCanvasElement | null) {
     if (!canvas) throw new Error('Canvas cannot be null');
@@ -36,37 +28,57 @@ export class LightSpeed {
     if (!context) throw new Error('Canvas context cannot be null or undefined');
 
     this.context = context;
+
+    // Initialize canvas size
+    this.onInitOrResize();
+
+    // Keep canvas size in sync with window size
+    window.addEventListener('resize', this.onInitOrResize.bind(this));
+
+    // Initial star count is based on canvas size,
+    // but this won't change on resize to avoid stars jumping around
     this.starCount = Math.max(
       Math.floor(this.canvas.width * this.canvas.height * STARS_PER_PX),
       MIN_STARS,
     );
 
-    const radius = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
-    this.gradients = COLORS.map((color) => {
-      const gradient = context.createRadialGradient(
-        canvas.width / 2,
-        canvas.height / 2,
-        0,
-        canvas.width / 2,
-        canvas.height / 2,
-        radius,
-      );
-      gradient.addColorStop(0.01, `rgba(${color}, ${MIN_OPACITY})`);
-      gradient.addColorStop(0.4, `rgba(${color}, 1)`);
-
-      return gradient;
-    });
-
     this.isDebugMode = location.search.includes('debug');
   }
 
   init() {
-    this.stars = Array.from({ length: this.starCount }).map(() => new Star(this.gradients));
+    this.stars = Array.from({ length: this.starCount }).map(() => new Star());
 
     // Bind the update method once instead of on every frame
     this.boundUpdate = this.update.bind(this);
 
     requestAnimationFrame(this.boundUpdate);
+  }
+
+  onInitOrResize() {
+    const width = this.canvas.clientWidth;
+    const height = this.canvas.clientHeight;
+
+    this.centerX = width / 2;
+    this.centerY = height / 2;
+    const radius = Math.sqrt(this.centerX * this.centerX + this.centerY * this.centerY);
+
+    this.canvas.width = width;
+    this.canvas.height = height;
+
+    this.gradients = COLORS.map((color) => {
+      const gradient = this.context.createRadialGradient(
+        this.centerX,
+        this.centerY,
+        0,
+        this.centerX,
+        this.centerY,
+        radius,
+      );
+      gradient.addColorStop(0.02, `rgba(${color}, 0)`);
+      gradient.addColorStop(0.8, `rgba(${color}, 1)`);
+
+      return gradient;
+    });
   }
 
   get speed() {
@@ -109,7 +121,7 @@ export class LightSpeed {
     this.prevMS = currMS;
 
     // Time in seconds
-    this.elapsedT += deltaT / 1000;
+    this.elapsedT = currMS / 1000;
     this.frames++;
 
     for (let i = 0; i < this.stars.length; i++) {
@@ -122,9 +134,6 @@ export class LightSpeed {
   }
 
   draw() {
-    const centerX = this.canvas.width / 2;
-    const centerY = this.canvas.height / 2;
-
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.globalCompositeOperation = 'color-dodge';
     this.context.lineCap = 'round';
@@ -136,7 +145,7 @@ export class LightSpeed {
       this.context.lineWidth = STAR_SIZE_PX * (i + 1) * mobileFactor;
 
       for (let j = i; j < this.stars.length; j += this.gradients.length) {
-        this.stars[j].draw(this.context, this.speed, centerX, centerY);
+        this.stars[j].draw(this.context, this.speed, this.centerX, this.centerY);
       }
       this.context.stroke();
     }
@@ -146,11 +155,11 @@ export class LightSpeed {
     this.context.globalCompositeOperation = 'source-over';
     this.context.fillStyle = '#000d';
     this.context.beginPath();
-    this.context.rect(0, 0, 300, 70);
+    this.context.rect(0, 0, 260, 36);
     this.context.fill();
 
-    this.context.font = '20px monospace';
+    this.context.font = '16px monospace';
     this.context.fillStyle = '#fff';
-    this.context.fillText(`${this.starCount} stars at ${this.fps} fps`, 20, 40);
+    this.context.fillText(`${this.starCount} stars at ${this.fps} fps`, 16, 24);
   }
 }
