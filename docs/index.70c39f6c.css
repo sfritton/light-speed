@@ -1,0 +1,36 @@
+main {
+  --gap: 16px;
+}
+
+main h1 {
+  text-align: center;
+  margin: 10vh 0;
+  font-size: max(20px, min(5vw, 32px));
+}
+
+@media (min-width: 668px) {
+  main h1 {
+    text-align: left;
+    margin: var(--gap);
+    padding: var(--gap) calc(var(--gap) * 2);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    background: #000a;
+    border-radius: 8px 8px 0 0;
+    display: inline-block;
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+  }
+}
+
+main canvas {
+  background: radial-gradient(circle at 20% 80%, #1048, #0000 55%), radial-gradient(circle at 60% 20%, #0038, #0000 45%), radial-gradient(circle at 80% 60%, #0148, #0000 45%), radial-gradient(circle, #002, #0000), #000;
+  width: 100vw;
+  max-width: 100%;
+  height: min(100vh, 100vw);
+  margin-top: max(40vh - 40vw, 0px);
+  display: block;
+}
+
+/*# sourceMappingURL=index.70c39f6c.css.map */
