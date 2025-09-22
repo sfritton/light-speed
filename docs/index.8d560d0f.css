@@ -81,6 +81,10 @@ footer div a:hover .label {
   opacity: 1;
 }
 
+@view-transition {
+  navigation: auto;
+}
+
 :root {
   --link-color: #fc9;
   --link-color-hover: #ffd6ae;
@@ -140,4 +144,4 @@ a:hover {
   overflow: hidden;
 }
 
-/*# sourceMappingURL=index.60e5a5d8.css.map */
+/*# sourceMappingURL=index.8d560d0f.css.map */
