@@ -1,5 +1,6 @@
 main {
   --gap: 16px;
+    view-transition-name: light-speed;
 
   & h1 {
     text-align: center;
@@ -25,12 +26,9 @@ main {
     max-width: 100%;
     margin-top: max(calc(40vh - 40vw), 0px);
     height: min(100vh, 100vw);
-    background:
-      radial-gradient(circle at 20% 80%, #1048, transparent 55%),
+    background: radial-gradient(circle at 20% 80%, #1048, transparent 55%),
       radial-gradient(circle at 60% 20%, #0038, transparent 45%),
       radial-gradient(circle at 80% 60%, #0148, transparent 45%),
-      radial-gradient(circle, #002, transparent),
-      #000;
+      radial-gradient(circle, #002, transparent), #000;
   }
-
 }
