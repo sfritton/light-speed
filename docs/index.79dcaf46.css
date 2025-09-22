@@ -1,5 +1,6 @@
 main {
   --gap: 16px;
+  view-transition-name: light-speed;
 }
 
 main h1 {
@@ -25,7 +26,6 @@ main h1 {
 }
 
 main canvas {
-  view-transition-name: light-speed;
   background: radial-gradient(circle at 20% 80%, #1048, #0000 55%), radial-gradient(circle at 60% 20%, #0038, #0000 45%), radial-gradient(circle at 80% 60%, #0148, #0000 45%), radial-gradient(circle, #002, #0000), #000;
   width: 100vw;
   max-width: 100%;
@@ -34,4 +34,4 @@ main canvas {
   display: block;
 }
 
-/*# sourceMappingURL=index.27a5502d.css.map */
+/*# sourceMappingURL=index.79dcaf46.css.map */
